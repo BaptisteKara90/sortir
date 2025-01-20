@@ -1,0 +1,17 @@
+.menu{
+    display: flex;
+    list-style-type: none;
+    justify-content: flex-end;
+}
+
+li{
+    margin-inline: 10px ;
+}
+
+.title{
+    text-align: center;
+}
+
+.copyright{
+    text-align: center;
+}
