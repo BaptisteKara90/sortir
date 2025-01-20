@@ -8,13 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+class Participant extends User
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -24,17 +19,8 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $mail = null;
-
-    #[ORM\Column]
-    private ?bool $administrateur = null;
-
     #[ORM\Column]
     private ?bool $actif = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pseudo = null;
@@ -59,11 +45,6 @@ class Participant
     {
         $this->sorties = new ArrayCollection();
         $this->sortiesOrganisees = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getNom(): ?string
@@ -102,30 +83,6 @@ class Participant
         return $this;
     }
 
-    public function getMail(): ?string
-    {
-        return $this->mail;
-    }
-
-    public function setMail(string $mail): static
-    {
-        $this->mail = $mail;
-
-        return $this;
-    }
-
-    public function isAdministrateur(): ?bool
-    {
-        return $this->administrateur;
-    }
-
-    public function setAdministrateur(bool $administrateur): static
-    {
-        $this->administrateur = $administrateur;
-
-        return $this;
-    }
-
     public function isActif(): ?bool
     {
         return $this->actif;
@@ -134,18 +91,6 @@ class Participant
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
 
         return $this;
     }
