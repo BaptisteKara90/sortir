@@ -53,6 +53,9 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieu = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $nbMaxParticipant = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -194,6 +197,18 @@ class Sortie
     public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getNbMaxParticipant(): ?int
+    {
+        return $this->nbMaxParticipant;
+    }
+
+    public function setNbMaxParticipant(?int $nbMaxParticipant): static
+    {
+        $this->nbMaxParticipant = $nbMaxParticipant;
 
         return $this;
     }
