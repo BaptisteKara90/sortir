@@ -4,11 +4,11 @@
 
 {% block body %}
     <h1>Register</h1>
-    <ul>
-        {% for error in errors %}
-            <li>{{ error.message }}</li>
-        {% endfor %}
-    </ul>
+{#    <ul>#}
+{#        {% for error in errors %}#}
+{#            <li>{{ error.message }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
 
     {{ form_start(registrationForm) }}
     {{ form_row(registrationForm.nom) }}
