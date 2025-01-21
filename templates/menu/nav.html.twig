@@ -5,7 +5,7 @@
         <li><a href="">Sites</a></li>
         <li><a href="">Accueil</a></li>
         <li><a href="">Nom</a></li>
-        <li><a href="">Profile</a></li>
+        <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Profil</a></li>
         <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {%  endif %}
     </ul>

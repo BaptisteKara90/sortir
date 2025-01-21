@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}profil{% endblock %}
+
+{% block body %}
+    <h1>Profil de {{ user.prenom }}</h1>
+
+    {{ form_start(userForm) }}
+    {{ form_row(userForm.nom) }}
+    {{ form_row(userForm.prenom) }}
+    {{ form_row(userForm.telephone) }}
+    {{ form_row(userForm.site) }}
+    {{ form_row(userForm.email) }}
+    {{ form_row(userForm.plainPassword, {
+        label: 'Password'
+    }) }}
+    <button type="submit" class="btn">Enregistrer</button>
+    {{ form_end(userForm) }}
+
+{% endblock %}
