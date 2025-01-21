@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SortieController!{% endblock %}
+
+{% block body %}
+    <h1>Toutes les sorties</h1>
+
+    <div>
+        {{ form_start(formFilter) }}
+        {{ form_widget(formFilter) }}
+        <button>Cherche !!!! </button>
+        {{ form_end(formFilter) }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Inscrits/Places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+                {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.debut | date('d-m-Y') }}</td>
+                    <td>{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
+                    <td>0/{{ sortie.nbMaxParticipant }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>non</td>
+                    <td>{{sortie.organisateur.nom}}</td>
+                    <td>
+                        <a href="#">Afficher</a>
+                        <a href="#">Se désister</a>
+                        <a href="#">Modifier</a>
+                    </td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
