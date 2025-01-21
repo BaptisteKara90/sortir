@@ -20,37 +20,34 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateHeureDebut = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $duree = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateLimiteInscription = null;
+    private ?\DateTimeInterface $debut = null;
 
     #[ORM\Column]
-    private ?int $nbInscriptionsMax = null;
+    private ?int $duree = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateLimitInscription = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $infosSortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etat = null;
-
     /**
-     * @var Collection<int, Participant>
+     * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'sorties')]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $organisateur = null;
+    private ?User $organisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -78,50 +75,38 @@ class Sortie
         return $this;
     }
 
-    public function getDateHeureDebut(): ?\DateTimeInterface
+    public function getDebut(): ?\DateTimeInterface
     {
-        return $this->dateHeureDebut;
+        return $this->debut;
     }
 
-    public function setDateHeureDebut(\DateTimeInterface $dateHeureDebut): static
+    public function setDebut(\DateTimeInterface $debut): static
     {
-        $this->dateHeureDebut = $dateHeureDebut;
+        $this->debut = $debut;
 
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): static
+    public function setDuree(int $duree): static
     {
         $this->duree = $duree;
 
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeInterface
+    public function getDateLimitInscription(): ?\DateTimeInterface
     {
-        return $this->dateLimiteInscription;
+        return $this->dateLimitInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): static
+    public function setDateLimitInscription(\DateTimeInterface $dateLimitInscription): static
     {
-        $this->dateLimiteInscription = $dateLimiteInscription;
-
-        return $this;
-    }
-
-    public function getNbInscriptionsMax(): ?int
-    {
-        return $this->nbInscriptionsMax;
-    }
-
-    public function setNbInscriptionsMax(int $nbInscriptionsMax): static
-    {
-        $this->nbInscriptionsMax = $nbInscriptionsMax;
+        $this->dateLimitInscription = $dateLimitInscription;
 
         return $this;
     }
@@ -138,48 +123,39 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?Etat
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(?Etat $etat): static
-    {
-        $this->etat = $etat;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Participant>
+     * @return Collection<int, User>
      */
     public function getParticipants(): Collection
     {
         return $this->participants;
     }
 
-    public function addParticipant(Participant $participant): static
+    public function addParticipant(User $participant): static
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
+            $participant->addSorty($this);
         }
 
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function removeParticipant(User $participant): static
     {
-        $this->participants->removeElement($participant);
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeSorty($this);
+        }
 
         return $this;
     }
 
-    public function getOrganisateur(): ?Participant
+    public function getOrganisateur(): ?User
     {
         return $this->organisateur;
     }
 
-    public function setOrganisateur(?Participant $organisateur): static
+    public function setOrganisateur(?User $organisateur): static
     {
         $this->organisateur = $organisateur;
 
@@ -198,6 +174,18 @@ class Sortie
         return $this;
     }
 
+    public function getEtat(): ?Etat
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?Etat $etat): static
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
     public function getLieu(): ?Lieu
     {
         return $this->lieu;
@@ -209,4 +197,5 @@ class Sortie
 
         return $this;
     }
+
 }
