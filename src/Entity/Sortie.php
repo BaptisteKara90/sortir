@@ -56,6 +56,9 @@ class Sortie
     #[ORM\Column(nullable: true)]
     private ?int $nbMaxParticipant = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $raison = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -209,6 +212,18 @@ class Sortie
     public function setNbMaxParticipant(?int $nbMaxParticipant): static
     {
         $this->nbMaxParticipant = $nbMaxParticipant;
+
+        return $this;
+    }
+
+    public function getRaison(): ?string
+    {
+        return $this->raison;
+    }
+
+    public function setRaison(?string $raison): static
+    {
+        $this->raison = $raison;
 
         return $this;
     }

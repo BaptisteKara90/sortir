@@ -11,7 +11,6 @@
         <button>Cherche !!!! </button>
         {{ form_end(formFilter) }}
     </div>
-
     <table>
         <thead>
             <tr>
@@ -41,6 +40,9 @@
                         <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
                         <a href="#">Se désister</a>
                         <a href="#">Modifier</a>
+                        {% if sortie.organisateur.id is same as(app.user.id) %}
+                        <a href="#">Annuler</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
