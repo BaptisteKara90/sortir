@@ -18,14 +18,19 @@ class FilterType extends AbstractType
     {
         $builder
             ->add('site', EntityType::class, [
+                'required' => false,
                 'class' => Site::class,
                 'choice_label' => 'nom',
             ])
-            ->add('content', TextType::class)
+            ->add('content', TextType::class, [
+                'required' => false,
+            ])
             ->add('dateDebut', DateTimeType::class, [
+                'required' => false,
                 'widget' => 'single_text',
             ])
             ->add('dateFin', DateTimeType::class, [
+                'required' => false,
                 'widget' => 'single_text',
             ])
             ->add('organisateur', CheckboxType::class, [
