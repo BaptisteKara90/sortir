@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sortie;
 use App\Form\FilterType;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -73,7 +74,7 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/{id}/join', name: 'join', methods: ['GET', 'POST'])]
-    public function join(Sortie $sortie, EntityManagerInterface $entityManager, UserRepository $userRepository){
+    public function join(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository){
 
         $currentUser = $this->getUser();
         $now = date("Y-m-d H:i:s");
@@ -107,10 +108,44 @@ final class SortieController extends AbstractController
         }
 
         $sortie->addParticipant($currentUser);
+
+        if(count($sortie->getParticipants()) >= $sortie->getNbMaxParticipant()) {
+            $sortie->setEtat($etatRepository->findOneByLibelle("cloturée"));
+        }
         $entityManager->persist($sortie);
         $entityManager->flush();
 
         $this->addFlash("success", "Vous êtes bien inscrit à l'évènement {$sortie->getNom()} !");
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+    }
+
+    #[Route('/{id}/quit', name: 'quit', methods: ['GET', 'POST'])]
+    public function quit(Sortie $sortie, EntityManagerInterface $entityManager, UserRepository $userRepository){
+
+        $currentUser = $this->getUser();
+        $now = date("Y-m-d H:i:s");
+        $errors = [];
+
+        if(strtotime($now) > $sortie->getDebut()->getTimestamp()) {
+
+            $errors[] = "Vous ne pouvez plus vous désinscrire car l'évènement a déjà débuté";
+        }
+
+        if(count($errors) > 0) {
+            foreach($errors as $error) {
+                $this->addFlash("error", $error);
+            }
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        if(strtotime($now) < $sortie->getDateLimitInscription()->getTimestamp()) {
+
+            $sortie->removeParticipant($currentUser);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+        }
+
+        $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
         return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
