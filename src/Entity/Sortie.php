@@ -34,7 +34,7 @@ class Sortie
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'sorties')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'sorties', cascade: ['persist'])]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]

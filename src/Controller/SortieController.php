@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Entity\User;
 use App\Form\FilterType;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,5 +52,50 @@ final class SortieController extends AbstractController
         return $this->render('sortie/add.html.twig', [
             'sortieForm' => $form,
         ]);
+    }
+
+    #[Route('/{id}', name: 'detail', methods: ['GET'])]
+    public function detail(Sortie $sortie) {
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
+
+    #[Route('/{id}/join', name: 'join', methods: ['GET', 'POST'])]
+    public function join(Sortie $sortie, EntityManagerInterface $entityManager, UserRepository $userRepository){
+
+        $currentUser = $userRepository->findOneById($this->getUser()->getId());
+        $now = date("Y-m-d H:i:s");
+        $errors = [];
+
+        if($currentUser->isActif() === false) {
+
+            $errors[] = "Vous ne pouvez pas vous inscrire à cette sortie car votre compte est désactivé";
+        }
+
+        if(count($sortie->getParticipants()) >= $sortie->getNbMaxParticipant()) {
+
+            $errors[] = "Vous ne pouvez pas vous inscrire car le nombre maximal de participant est déjà atteint";
+        }
+
+        if(strtotime($now) > $sortie->getDateLimitInscription()->getTimestamp()) {
+
+            $errors[] = "Vous ne pouvez pas vous inscrire à cette car la date limite d'inscription est dépassée";
+        }
+
+        if(count($errors) > 0) {
+            foreach($errors as $error) {
+                $this->addFlash("error", $error);
+            }
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        $sortie->addParticipant($currentUser);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+
+        $this->addFlash("success", "Vous êtes bien inscrit à l'évènement {$sortie->getNom()} !");
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 }

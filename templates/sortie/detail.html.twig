@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ sortie.nom }}{% endblock %}
+
+{% block body %}
+    <h1>{{ sortie.nom }}</h1>
+
+    <div>
+        <div>
+            <ul>
+                <li>Nom de la sortie : {{ sortie.nom }} </li>
+                <li>Date et heure de la sortie : {{ sortie.debut|date("d/m/Y") }} </li>
+                <li>Date limite d'inscription : {{ sortie.dateLimitInscription|date("d/m/Y") }} </li>
+                <li>Nombre de place : {{ sortie.nbMaxParticipant }} </li>
+                <li>Durée : {{ sortie.duree }} </li>
+                <li>Description et infos : {{ sortie.infosSortie }} </li>
+            </ul>
+        </div>
+        <div>
+            <ul>
+                <li>Lieu : {{ sortie.lieu.nom }} </li>
+                <li>Rue : {{ sortie.lieu.rue }}</li>
+                <li>Ville : {{ sortie.lieu.ville.nom }} </li>
+                <li>Code postal : {{ sortie.lieu.ville.codePostal }} </li>
+                <li>Lattitude : {{ sortie.lieu.lattitude }} </li>
+                <li>Longitude : {{ sortie.lieu.longitude }} </li>
+                <li>
+                    <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
+                        <button>S'inscrire</button>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for participant in sortie.participants %}
+                <tr>
+                    <td>-</td>
+                    <td>{{ participant.prenom }} {{ participant.nom }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
