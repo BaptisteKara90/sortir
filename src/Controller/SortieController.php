@@ -52,7 +52,7 @@ final class SortieController extends AbstractController
             'sortieForm' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'cancel', methods: ['GET'])]
+    #[Route('/cancel/{id}', name: 'cancel', methods: ['GET'])]
     public function cancel(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, int $id): Response
     {
         $sortie = $sortieRepository->find($id);
