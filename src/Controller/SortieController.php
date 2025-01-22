@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Form\FilterType;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
