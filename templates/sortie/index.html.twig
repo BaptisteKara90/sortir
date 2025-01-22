@@ -36,7 +36,15 @@
                     <td>non</td>
                     <td>{{sortie.organisateur.nom}}</td>
                     <td>
-                        <a href="{{ path('sortie_join', {"id": sortie.id}) }}">S'inscrire</a>
+                        {% if app.user in sortie.participants %}
+                            <a href="">
+                                Se désinscrire
+                            </a>
+                        {% else %}
+                            <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
+                                S'inscrire
+                            </a>
+                        {% endif %}
                         <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
                         <a href="#">Se désister</a>
                         <a href="#">Modifier</a>

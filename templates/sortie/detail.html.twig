@@ -25,9 +25,15 @@
                 <li>Lattitude : {{ sortie.lieu.lattitude }} </li>
                 <li>Longitude : {{ sortie.lieu.longitude }} </li>
                 <li>
+                    {% if app.user in sortie.participants %}
+                        <a href="">
+                            <button>Se désinscrire</button>
+                        </a>
+                    {% else %}
                     <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
                         <button>S'inscrire</button>
                     </a>
+                    {% endif %}
                 </li>
             </ul>
         </div>

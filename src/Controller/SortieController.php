@@ -84,6 +84,11 @@ final class SortieController extends AbstractController
             $errors[] = "Vous ne pouvez pas vous inscrire à cette sortie car votre compte est désactivé";
         }
 
+        if($sortie->getParticipants()->contains($currentUser)){
+
+            $errors[] = "Vous êtes déjà inscrit à cette sortie !";
+        }
+
         if(count($sortie->getParticipants()) >= $sortie->getNbMaxParticipant()) {
 
             $errors[] = "Vous ne pouvez pas vous inscrire car le nombre maximal de participant est déjà atteint";
