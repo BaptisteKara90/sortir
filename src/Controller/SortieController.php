@@ -75,7 +75,7 @@ final class SortieController extends AbstractController
     #[Route('/{id}/join', name: 'join', methods: ['GET', 'POST'])]
     public function join(Sortie $sortie, EntityManagerInterface $entityManager, UserRepository $userRepository){
 
-        $currentUser = $userRepository->findOneById($this->getUser()->getId());
+        $currentUser = $this->getUser();
         $now = date("Y-m-d H:i:s");
         $errors = [];
 
