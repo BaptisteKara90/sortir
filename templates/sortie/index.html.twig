@@ -28,38 +28,6 @@
     </thead>
     <tbody>
 
-<<<<<<< Updated upstream
-                {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.debut | date('d-m-Y') }}</td>
-                    <td>{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
-                    <td>0/{{ sortie.nbMaxParticipant }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
-                    <td>non</td>
-                    <td>{{sortie.organisateur.nom}}</td>
-                    <td>
-                        {% if app.user in sortie.participants %}
-                            <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
-                                Se désinscrire
-                            </a>
-                        {% else %}
-                            <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
-                                S'inscrire
-                            </a>
-                        {% endif %}
-                        <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
-                        <a href="#">Se désister</a>
-                        <a href="#">Modifier</a>
-                        {% if sortie.organisateur.id is same as(app.user.id) %}
-                        <a href="#">Annuler</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-        </tbody>
-    </table>
-=======
             {% for sortie in sorties %}
                 {{ sortie.etat.id }}
             <tr>
@@ -109,6 +77,5 @@
             {% endfor %}
     </tbody>
 </table>
->>>>>>> Stashed changes
 
 {% endblock %}
