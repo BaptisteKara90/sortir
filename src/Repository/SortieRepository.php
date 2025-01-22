@@ -56,4 +56,21 @@ class SortieRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         return $query->getResult();
     }
+
+    public function cancel(int $id, int $idEtat, string $raison): bool{
+        var_dump($id);
+        $qb = $this->createQueryBuilder('s');
+        $qb->update()
+            ->set('s.etat', ':etat')
+            ->set('s.raison', ':raison')
+            ->where('s.id = :id')
+            ->setParameter('etat', $idEtat)
+            ->setParameter('id', $id)
+            ->setParameter('raison', $raison);
+        $query = $qb->getQuery()->execute();
+        if($query === 0){
+            return false;
+        }
+        return true;
+    }
 }
