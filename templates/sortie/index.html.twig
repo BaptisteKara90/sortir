@@ -37,7 +37,7 @@
                     <td>{{sortie.organisateur.nom}}</td>
                     <td>
                         {% if app.user in sortie.participants %}
-                            <a href="">
+                            <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
                                 Se désinscrire
                             </a>
                         {% else %}

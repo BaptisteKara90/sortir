@@ -7,7 +7,6 @@ use App\Form\FilterType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -120,7 +119,7 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/{id}/quit', name: 'quit', methods: ['GET', 'POST'])]
-    public function quit(Sortie $sortie, EntityManagerInterface $entityManager, UserRepository $userRepository){
+    public function quit(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository){
 
         $currentUser = $this->getUser();
         $now = date("Y-m-d H:i:s");
@@ -135,18 +134,20 @@ final class SortieController extends AbstractController
             foreach($errors as $error) {
                 $this->addFlash("error", $error);
             }
-            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+            return $this->redirectToRoute('sortie_list');
         }
 
-        if(strtotime($now) < $sortie->getDateLimitInscription()->getTimestamp()) {
+        if(strtotime($now) < $sortie->getDateLimitInscription()->getTimestamp() && $sortie->getEtat()->getLibelle() === "cloturée") {
 
-            $sortie->removeParticipant($currentUser);
-            $entityManager->persist($sortie);
-            $entityManager->flush();
+            $sortie->setEtat($etatRepository->findOneByLibelle("ouverte"));
         }
+
+        $sortie->removeParticipant($currentUser);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
 
         $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
-        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        return $this->redirectToRoute('sortie_list');
     }
 
 }
