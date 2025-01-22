@@ -10,7 +10,7 @@
 <div>
     {{ form_start(formFilter) }}
     {{ form_widget(formFilter) }}
-    <button>Cherche !!!! </button>
+    <button>Rechercher une sortie </button>
     {{ form_end(formFilter) }}
 </div>
 <table>
@@ -29,7 +29,6 @@
     <tbody>
 
             {% for sortie in sorties %}
-                {{ sortie.etat.id }}
             <tr>
                 <td>{{ sortie.nom }}</td>
                 <td>{{ sortie.debut | date('d-m-Y') }}</td>
@@ -40,7 +39,7 @@
                 <td>{{sortie.organisateur.nom}}</td>
                 <td>
                     {% if app.user in sortie.participants %}
-                        <a href="">
+                        <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
                             Se désinscrire
                         </a>
                     {% else %}
@@ -49,7 +48,6 @@
                         </a>
                     {% endif %}
                     <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
-                    <a href="#">Se désister</a>
                     <a href="#">Modifier</a>
                     {% if sortie.organisateur.id == app.user.id and sortie.etat.id != 6 %}
                     <a id="cancel" href="">Annuler</a>
