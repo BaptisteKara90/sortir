@@ -26,7 +26,7 @@
                 <li>Longitude : {{ sortie.lieu.longitude }} </li>
                 <li>
                     {% if app.user in sortie.participants %}
-                        <a href="">
+                        <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
                             <button>Se désinscrire</button>
                         </a>
                     {% else %}
