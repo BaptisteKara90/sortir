@@ -52,16 +52,23 @@ final class SortieController extends AbstractController
             'sortieForm' => $form,
         ]);
     }
-    #[Route('/cancel/{id}', name: 'cancel', methods: ['GET'])]
-    public function cancel(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, int $id): Response
+    #[Route('/cancel/{id}', name: 'cancel', methods: ['GET', 'POST'])]
+    public function cancel(Request $request,EtatRepository $etatRepository , SortieRepository $sortieRepository, EntityManagerInterface $entityManager, int $id): Response
     {
         $sortie = $sortieRepository->find($id);
         $user = $this->getUser();
+        $etat = $etatRepository->findOneByLibelle('Annulée');
+        $raison = $request->get("raison");
+        $etatId = $etat->getId();
         if($user->getId() !== $sortie->getOrganisateur()->getId()){
             return $this->redirectToRoute('accueil');
         }
-
-        return $this->render('sortie/cancel.html.twig', []);
+        $cancel = $sortieRepository->cancel($id, $etatId, $raison);
+        if(!$cancel){
+            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        }
+        $sortie = $sortieRepository->find($id);
+        return $this->redirectToRoute('sortie_detail', ['id' => $id]);
     }
 
     #[Route('/{id}', name: 'detail', methods: ['GET'])]
