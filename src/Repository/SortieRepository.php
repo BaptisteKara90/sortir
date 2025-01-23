@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,7 +19,7 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findBySite($site){
        $qb = $this->createQueryBuilder('s');
-       $qb->where('s.site = :site')->setParameter('site', $site);
+       $qb->where('s.site = :site')->setParameter('site', $site)->andWhere('s.active = true');
         $query = $qb->getQuery();
         return $query->getResult();
     }
@@ -54,6 +55,16 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('etat', 5);
         }
         $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
+    public function findByEtat(Etat $etat){
+
+
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.etat = :etat')->setParameter('etat', $etat);
+        $query = $qb->getQuery();
+
         return $query->getResult();
     }
 }

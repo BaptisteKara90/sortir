@@ -59,6 +59,9 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $raison = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -224,6 +227,18 @@ class Sortie
     public function setRaison(?string $raison): static
     {
         $this->raison = $raison;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }

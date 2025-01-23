@@ -37,7 +37,6 @@ class EtatRepository extends ServiceEntityRepository
             ->andWhere('e.libelle = :libelle')
             ->setParameter('libelle', $libelle)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
 }
