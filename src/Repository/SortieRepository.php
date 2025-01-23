@@ -23,6 +23,13 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+//    public function findBySiteId($siteId){
+//        $qb = $this->createQueryBuilder('s');
+//        $qb->where('s.site = :site')->setParameter('site', $siteId);
+//        $query = $qb->getQuery();
+//        return $query->getResult();
+//    }
+
     public function findByOption(array $data, $user){
         $qb = $this->createQueryBuilder('s');
         if($data['site']){

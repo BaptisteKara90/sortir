@@ -16,11 +16,16 @@ class FilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $userSite = $options['userSite'] ?? null;
+
         $builder
             ->add('site', EntityType::class, [
                 'required' => false,
                 'class' => Site::class,
                 'choice_label' => 'nom',
+                'placeholder' => 'Selectionner une site',
+                'data' => $userSite,
             ])
             ->add('content', TextType::class, [
                 'required' => false,
@@ -56,6 +61,7 @@ class FilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'userSite' => null,
             'data_class' => null,
         ]);
     }
