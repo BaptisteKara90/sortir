@@ -2,7 +2,7 @@
     <ul class="menu">
         {% if app.user %}
         <li><a href="">Villes</a></li>
-        <li><a href="">Sites</a></li>
+        <li><a href="{{ path('site_list') }}">Sites</a></li>
         <li><a href="">Accueil</a></li>
         <li><a href="">Nom</a></li>
         <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Profil</a></li>

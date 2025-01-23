@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}sites{% endblock %}
+
+{% block body %}
+    <h1>Gérer les sites</h1>
+    <div>
+        <h2>Filtrer les sites</h2>
+        {{ form_start(filterForm) }}
+        {{ form_widget(filterForm) }}
+        <button>Rechercher</button>
+        {{ form_end(filterForm) }}
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Ville</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for site in sites %}
+            <tr>
+                <td>{{ site.nom }}</td>
+                <td>
+                    <a href=""></a>
+                    <a href=""></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
