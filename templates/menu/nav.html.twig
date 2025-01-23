@@ -1,11 +1,18 @@
 <nav class="container-menu">
     <ul class="menu">
         {% if app.user %}
-        <li><a href="">Villes</a></li>
-        <li><a href="{{ path('site_list') }}">Sites</a></li>
-        <li><a href="">Accueil</a></li>
-        <li><a href="">Nom</a></li>
-        <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Profil</a></li>
+            <li>{{ app.user.prenom }} {{ app.user.nom }}
+                {% if 'ROLE_ADMIN' in app.user.roles %}
+                    (Administrateur)
+                {% endif %}
+            </li>
+            <li><a href="{{ path('sortie_list') }}">Accueil</a></li>
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <li><a href="{{ path('app_register') }}">Ajout d'un utilisateur</a></li>
+                <li><a href="">Villes</a></li>
+                <li><a href="{{ path('site_list') }}">Sites</a></li>
+                {% endif %}
+        <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Mon Profil</a></li>
         <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {%  endif %}
     </ul>
