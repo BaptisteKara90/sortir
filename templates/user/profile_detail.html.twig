@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}profil{% endblock %}
+
+{% block body %}
+    <h1>Profil de {{ user.nom|capitalize }} {{ user.prenom|capitalize }}</h1>
+
+    <div>
+        <ul>
+            <li>Prénom : {{ user.prenom|capitalize }}</li>
+            <li>Nom : {{ user.nom|capitalize }}</li>
+            <li>Numéro de téléphone : {{ user.telephone }}</li>
+            <li>Email : {{ user.email }}</li>
+            <li>Site de rattachement : {{ user.site.nom }}</li>
+        </ul>
+    </div>
+
+{% endblock %}

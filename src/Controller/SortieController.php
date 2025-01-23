@@ -55,7 +55,7 @@ final class SortieController extends AbstractController
                 'formFilter' => $formFilter,
             ]);
         }
-        $sorties = $sortieRepository->findBySite($this->getUser()->getSite());
+        $sorties = $sortieRepository->findBySite($this->getUser()->getSite(), $user);
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
             'formFilter' => $formFilter,

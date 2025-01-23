@@ -38,7 +38,7 @@
                             <button>Se désinscrire</button>
                         </a>
                     {% else %}
-                        {% if sortie.etat.libelle == "ouverte" %}
+                        {% if sortie.etat.libelle == "Ouverte" %}
                             <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
                                 S'inscrire
                             </a>
@@ -83,10 +83,12 @@
             {% for participant in sortie.participants %}
                 <tr>
                     <td>-</td>
-                    <td>{{ participant.prenom }} {{ participant.nom }}</td>
+                    <td><a href="{{ path('user_detail', {'id': participant.id }) }}">{{ participant.prenom }} {{ participant.nom }} </a></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 {% endblock %}
+
+
