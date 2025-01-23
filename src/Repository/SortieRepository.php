@@ -17,22 +17,37 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findBySite($site){
-       $qb = $this->createQueryBuilder('s');
-       $qb->where('s.site = :site')->setParameter('site', $site)->andWhere('s.active = true');
+    public function findBySite($site, $user)
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        // Conditions de base
+        $qb->where('s.site = :site')
+            ->setParameter('site', $site)
+            ->andWhere('s.active = true')
+            ->join('s.etat', 'etat');
+
+        // Si l'utilisateur n'est pas admin
+        if (!in_array("ROLE_ADMIN", $user->getRoles())) {
+                $qb->andWhere(
+                    $qb->expr()->orX(
+                        's.organisateur = :user',
+                        'etat.libelle != :libelle'
+                    )
+                )
+                    ->setParameter('user', $user)
+                    ->setParameter('libelle', 'Créée');
+        }
+
+
+        // Exécution de la requête
         $query = $qb->getQuery();
         return $query->getResult();
     }
 
-//    public function findBySiteId($siteId){
-//        $qb = $this->createQueryBuilder('s');
-//        $qb->where('s.site = :site')->setParameter('site', $siteId);
-//        $query = $qb->getQuery();
-//        return $query->getResult();
-//    }
-
     public function findByOption(array $data, $user){
         $qb = $this->createQueryBuilder('s');
+        $qb->join('s.etat', 'etat');
         if($data['site']){
             $qb->where('s.site = :site')->setParameter('site', $data['site']->getId());
         }
@@ -52,15 +67,28 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere('s.organisateur = :organisateur')
                 ->setParameter('organisateur', $user->getId());
         }
-        //TODO participant
-//        if($data['inscrit']) {
-//            $qb->andWhere('s.inscrit = :inscrit')
-//                ->setParameter('inscrit', $data['inscrit']);
-//        }
-        if ($data['sortiePassee']) {
-            $qb->andWhere('s.etat = :etat')
-                ->setParameter('etat', 5);
+        if($data['inscrit']) {
+            $qb->andWhere(':inscrit MEMBER OF s.participants')
+                ->setParameter('inscrit', $user);
         }
+        if ($data['sortiePassee']) {
+                $qb->andWhere('etat.libelle = :libelle')
+                ->setParameter('libelle', 'Passée');
+        }
+
+        // Si l'utilisateur n'est pas admin
+        if (!in_array("ROLE_ADMIN", $user->getRoles())) {
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    's.organisateur = :user',
+                    'etat.libelle != :libelle'
+                )
+            )
+                ->setParameter('user', $user)
+                ->setParameter('libelle', 'Créée');
+        }
+
+        $qb->andWhere('s.active = true');
         $query = $qb->getQuery();
         return $query->getResult();
     }

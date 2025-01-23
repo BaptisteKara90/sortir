@@ -4,6 +4,9 @@
 {% endblock %}
 {% block title %}Hello SortieController!{% endblock %}
 
+
+
+
 {% block body %}
     <h1>Toutes les sorties</h1>
 
@@ -33,10 +36,23 @@
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.debut | date('d-m-Y') }}</td>
                     <td>{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
-                    <td>0/{{ sortie.nbMaxParticipant }}</td>
+                    <td>{{ sortie.participants|length }}/{{ sortie.nbMaxParticipant }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td>non</td>
-                    <td>{{sortie.organisateur.nom}}</td>
+                    <td>
+                        {% set userFound = false %}
+                        {% for participant in sortie.participants %}
+                            {% if participant.id == app.user.id %}
+                                {% set userFound = true %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if userFound %}
+                            oui
+                        {% else %}
+                            non
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ path("user_detail", {"id" : sortie.organisateur.id}) }}">{{sortie.organisateur.nom}}</a></td>
                     <td>
                         {% if sortie.etat.libelle != "Annulée"%}
                         {% if app.user in sortie.participants %}
@@ -50,7 +66,6 @@
                         {% endif %}
                         {% endif %}
                         <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
-                        <a href="#">Se désister</a>
                         {% if sortie.organisateur.id == app.user.id and sortie.etat.libelle != "Annulée" %}
                         <a href="#">Modifier</a>
                         <a id="cancel" href="">Annuler</a>
