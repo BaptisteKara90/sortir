@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block javascript %}
+{% block importmap %}{{ importmap('modal') }}{% endblock %}
+{% endblock %}
 
 {% block title %}{{ sortie.nom }}{% endblock %}
 
@@ -24,6 +27,11 @@
                 <li>Code postal : {{ sortie.lieu.ville.codePostal }} </li>
                 <li>Lattitude : {{ sortie.lieu.lattitude }} </li>
                 <li>Longitude : {{ sortie.lieu.longitude }} </li>
+                {% if sortie.raison %}
+                    <li>
+                        Raison de l'annulation : {{ sortie.raison }}
+                    </li>
+                {% endif %}
                 <li>
                     {% if app.user in sortie.participants %}
                         <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
@@ -37,6 +45,29 @@
                         {% endif %}
                     {% endif %}
                 </li>
+                {% if sortie.organisateur.id == app.user.id and sortie.etat.id != 6 %}
+                    <li>
+                    <a id="cancel" href="">Annuler</a>
+                    </li>
+
+                    <!-- MODAL -->
+                    <div class="modal-overlay" id="modalOverlay">
+                        <div class="modal">
+                            <h2>Annulation de la Sortie</h2>
+                            <form action="{{ path('sortie_cancel', {'id': sortie.id }) }}" method="POST">
+                                <div class="input-modal">
+                                    <label for="raison">Veuillez indiquer la raison de l'annulation</label>
+                                    <textarea name="raison" rows="3"></textarea>
+                                </div>
+
+                                <div>
+                                    <input type="submit" value="Annuler la sortie"/>
+                                </div>
+                            </form>
+                            <button id="closeModalButton">Précédent</button>
+                        </div>
+                    </div>
+                {% endif %}
             </ul>
         </div>
     </div>

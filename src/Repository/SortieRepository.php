@@ -24,6 +24,13 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+//    public function findBySiteId($siteId){
+//        $qb = $this->createQueryBuilder('s');
+//        $qb->where('s.site = :site')->setParameter('site', $siteId);
+//        $query = $qb->getQuery();
+//        return $query->getResult();
+//    }
+
     public function findByOption(array $data, $user){
         $qb = $this->createQueryBuilder('s');
         if($data['site']){
@@ -66,5 +73,22 @@ class SortieRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
 
         return $query->getResult();
+    }
+
+    public function cancel(int $id, int $idEtat, string $raison): bool{
+        var_dump($id);
+        $qb = $this->createQueryBuilder('s');
+        $qb->update()
+            ->set('s.etat', ':etat')
+            ->set('s.raison', ':raison')
+            ->where('s.id = :id')
+            ->setParameter('etat', $idEtat)
+            ->setParameter('id', $id)
+            ->setParameter('raison', $raison);
+        $query = $qb->getQuery()->execute();
+        if($query === 0){
+            return false;
+        }
+        return true;
     }
 }

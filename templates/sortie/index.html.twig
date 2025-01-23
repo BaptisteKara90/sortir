@@ -1,30 +1,32 @@
 {% extends 'base.html.twig' %}
-
+{% block javascript %}
+{% block importmap %}{{ importmap('modal') }}{% endblock %}
+{% endblock %}
 {% block title %}Hello SortieController!{% endblock %}
 
 {% block body %}
     <h1>Toutes les sorties</h1>
 
-    <div>
-        {{ form_start(formFilter) }}
-        {{ form_widget(formFilter) }}
-        <button>Cherche !!!! </button>
-        {{ form_end(formFilter) }}
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Nom de la sortie</th>
-                <th>Date de la sortie</th>
-                <th>Clôture</th>
-                <th>Inscrits/Places</th>
-                <th>Etat</th>
-                <th>Inscrit</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<div>
+    {{ form_start(formFilter) }}
+    {{ form_widget(formFilter) }}
+    <button>Rechercher une sortie </button>
+    {{ form_end(formFilter) }}
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Nom de la sortie</th>
+            <th>Date de la sortie</th>
+            <th>Clôture</th>
+            <th>Inscrits/Places</th>
+            <th>Etat</th>
+            <th>Inscrit</th>
+            <th>Organisateur</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
 
                 {% for sortie in sorties %}
                 <tr>
@@ -41,22 +43,37 @@
                                 Se désinscrire
                             </a>
                         {% else %}
-                            {% if sortie.etat.libelle == "ouverte" %}
-                                <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
-                                    S'inscrire
-                                </a>
-                            {% endif %}
+                            <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
+                                S'inscrire
+                            </a>
                         {% endif %}
                         <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
                         <a href="#">Se désister</a>
                         <a href="#">Modifier</a>
-                        {% if sortie.organisateur.id is same as(app.user.id) %}
-                        <a href="#">Annuler</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-        </tbody>
-    </table>
+                        <a id="cancel" href="">Annuler</a>
+
+                        <!-- MODAL -->
+                        <div class="modal-overlay" id="modalOverlay">
+                            <div class="modal">
+                                <h2>Annulation de la Sortie</h2>
+                                <form action="{{ path('sortie_cancel', {'id': sortie.id }) }}" method="POST">
+                                    <div class="input-modal">
+                                        <label for="raison">Veuillez indiquer la raison de l'annulation</label>
+                                        <textarea name="raison" rows="3"></textarea>
+                                    </div>
+
+                                    <div>
+                                        <input type="submit" value="Annuler la sortie"/>
+                                    </div>
+                                </form>
+                                <button id="closeModalButton">Précédent</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
