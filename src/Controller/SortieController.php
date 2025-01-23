@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\FilterType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,10 +17,22 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sortie', name: 'sortie_')]
 final class SortieController extends AbstractController
 {
-    #[Route('/', name: 'list', methods: ['GET', 'POST'])]
-    public function index(SortieRepository $sortieRepository, Request $request, EntityManagerInterface $entityManager): Response{
+    #[Route('/{idSite?}', name: 'list', requirements: ['idSite' => '\d+'], methods: ['GET', 'POST'])]
+    public function index(SortieRepository $sortieRepository,SiteRepository $siteRepository, Request $request,EntityManagerInterface $entityManager ,?int $idSite = null): Response{
         $user = $this->getUser();
-        $formFilter = $this->createForm(FilterType::class);
+        
+        if($idSite != null){
+            $site = $siteRepository->find($idSite);
+            $formFilter = $this->createForm(FilterType::class, null, [
+                'userSite' => $site,
+            ]);
+        }else{
+            $userSite = $user->getSite();
+            $formFilter = $this->createForm(FilterType::class, null, [
+                'userSite' => $userSite,
+            ]);
+        }
+
         $formFilter->handleRequest($request);
 
         if($formFilter->isSubmitted() && $formFilter->isValid()){
@@ -29,7 +43,14 @@ final class SortieController extends AbstractController
                 'formFilter' => $formFilter,
             ]);
         }
-
+        if($idSite != null){
+            $site = $entityManager->find(Site::class, $idSite);
+            $sorties = $sortieRepository->findBySite($site);
+            return $this->render('sortie/index.html.twig', [
+                'sorties' => $sorties,
+                'formFilter' => $formFilter,
+            ]);
+        }
         $sorties = $sortieRepository->findBySite($this->getUser()->getSite());
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sorties,
@@ -71,7 +92,7 @@ final class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_detail', ['id' => $id]);
     }
 
-    #[Route('/{id}', name: 'detail', methods: ['GET'])]
+    #[Route('/detail/{id}', name: 'detail', methods: ['GET'])]
     public function detail(Sortie $sortie) {
 
         return $this->render('sortie/detail.html.twig', [
@@ -152,9 +173,8 @@ final class SortieController extends AbstractController
         $sortie->removeParticipant($currentUser);
         $entityManager->persist($sortie);
         $entityManager->flush();
-
         $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
-        return $this->redirectToRoute('sortie_list');
+        return $this->redirectToRoute('sortie_list', ['idSite' => $sortie->getSite()->getId()]);
     }
 
 }
