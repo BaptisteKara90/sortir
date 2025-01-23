@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -45,6 +46,14 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Email',
                 'required' => true,
                 'invalid_message' => 'L\'email n\'est pas valide',
+            ])
+            ->add('roles', ChoiceType::class, [
+                'choices' => [
+                    'Utilisateur' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN',
+                ],
+                'expanded' => true, // Affiche les options sous forme de cases à cocher
+                'multiple' => true, // Permet de sélectionner plusieurs rôles
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
