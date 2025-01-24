@@ -13,7 +13,7 @@
                 <li><a href="{{ path('sortie_list') }}">Accueil</a></li>
                 {% if 'ROLE_ADMIN' in app.user.roles %}
                     <li><a href="{{ path('app_register') }}">Ajout d'un utilisateur</a></li>
-                    <li><a href="">Villes</a></li>
+                    <li><a href="{{ path('ville_list') }}">Villes</a></li>
                     <li><a href="{{ path('site_list') }}">Sites</a></li>
                 {% endif %}
                 <li><a href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>

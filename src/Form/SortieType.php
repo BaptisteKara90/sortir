@@ -7,6 +7,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -45,6 +46,11 @@ class SortieType extends AbstractType
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'choice_label' => 'nom',
+                'query_builder' => function (SiteRepository $siteRepository) {
+                return $siteRepository->createQueryBuilder('s')
+                    ->where('s.actif = :actif')
+                    ->setParameter('actif', true);
+                }
             ])
             ->add('lieu', LieuType::class)
             ->add('active', HiddenType::class, [
