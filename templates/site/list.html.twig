@@ -24,12 +24,17 @@
             <tr>
                 <td>{{ site.nom }}</td>
                 <td>
-                    <a href=""></a>
-                    <a href=""></a>
+                    <a href="{{ path("site_update", {"id" : site.id}) }}">Modifier</a>
+                    {% if site.actif %}
+                    <a href="{{ path("site_delete", {"id" : site.id}) }}">Supprimer</a>
+                    {% else %}
+                       <a href="{{ path("site_activate", {"id" : site.id}) }}">Réactiver</a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path("site_add") }}">Ajouter</a>
 
 {% endblock %}

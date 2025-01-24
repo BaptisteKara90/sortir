@@ -62,7 +62,7 @@ final class SortieController extends AbstractController
         ]);
     }
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager): Response
+public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);

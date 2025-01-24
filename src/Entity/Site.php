@@ -30,6 +30,9 @@ class Site
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'site')]
     private Collection $participants;
 
+    #[ORM\Column]
+    private bool $actif = true;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -109,6 +112,18 @@ class Site
                 $participant->setSite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

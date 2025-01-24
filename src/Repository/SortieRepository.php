@@ -17,7 +17,7 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findBySite($site, $user)
+    public function findBySite($site, $user = null)
     {
         $qb = $this->createQueryBuilder('s');
 
@@ -28,7 +28,7 @@ class SortieRepository extends ServiceEntityRepository
             ->join('s.etat', 'etat');
 
         // Si l'utilisateur n'est pas admin
-        if (!in_array("ROLE_ADMIN", $user->getRoles())) {
+        if ($user !== null && !in_array("ROLE_ADMIN", $user->getRoles())) {
                 $qb->andWhere(
                     $qb->expr()->orX(
                         's.organisateur = :user',
