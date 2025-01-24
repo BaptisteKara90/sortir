@@ -52,10 +52,19 @@ class SortieType extends AbstractType
                     ->setParameter('actif', true);
                 }
             ])
-            ->add('lieu', LieuType::class)
-            ->add('active', HiddenType::class, [
-                "data" => true
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
+                'choice_label' => 'nom', // Nom du lieu à afficher
+                'placeholder' => 'Sélectionnez un lieu existant',
+                'required' => false,
             ])
+            ->add('nouveauLieu', LieuType::class, [
+                'mapped' => false, // Ce champ ne correspond pas directement à une propriété de l'entité
+                'required' => false,
+            ])
+            ->add('active', HiddenType::class, [
+            "data" => true
+        ])
         ;
     }
 
