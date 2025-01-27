@@ -16,28 +16,29 @@ class LieuRepository extends ServiceEntityRepository
         parent::__construct($registry, Lieu::class);
     }
 
-    //    /**
-    //     * @return Lieu[] Returns an array of Lieu objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?Lieu
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function updateActif(int $id){
+        $qb = $this->createQueryBuilder('s');
+        $qb->update()
+            ->set('s.actif',':actif')
+            ->where('s.id = :id')
+            ->setParameter('id',$id)
+            ->setParameter('actif',0);
+        $query = $qb->getQuery()->execute();
+        if($query ===0){
+            return false;
+        }
+
+        return true;
+    }
+
+    public function activate($id){
+        $qb = $this->createQueryBuilder('s')
+            ->update()
+            ->set('s.actif', 1)
+            ->where('s.id = :id')
+            ->setParameter('id', $id);
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
 }

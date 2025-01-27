@@ -98,7 +98,7 @@ final class SiteController extends AbstractController
     }
 
     #[Route('/activate/{id}', name: 'activate', methods: ['GET', 'POST'])]
-    public function activate(SortieRepository $sortieRepository, SiteRepository $siteRepository, Request $request, int $id): Response
+    public function activate(SiteRepository $siteRepository, int $id): Response
     {
          $siteRepository->activate($id);
          return $this->redirectToRoute('site_list');
