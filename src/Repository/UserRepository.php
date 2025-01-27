@@ -67,4 +67,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult()
             ;
     }
+
+    public function findByFilter(object $filter) {
+
+        $q = $this->createQueryBuilder('u');
+        if ($filter->nom) {
+            $q->andWhere('u.nom LIKE :nom')->setParameter('nom', '%'.$filter->nom.'%');
+        }
+        if ($filter->prenom) {
+            $q->andWhere('u.prenom LIKE :prenom')->setParameter('prenom', '%'.$filter->prenom.'%');
+        }
+        if ($filter->email) {
+            $q->andWhere('u.email LIKE :email')->setParameter('email', '%'.$filter->email.'%');
+        }
+        if ($filter->site) {
+            $q->andWhere('u.site = :site')->setParameter('site', $filter->site);
+        }
+        $query = $q->getQuery();
+        return $query->getResult();
+    }
 }

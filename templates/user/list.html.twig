@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}participants{% endblock %}
+
+{% block body %}
+    <h1>Gérer les participants</h1>
+    <div>
+        <h2>Filtrer les participants</h2>
+        {{ form_start(filter) }}
+        {{ form_widget(filter) }}
+        <button>Rechercher</button>
+        {{ form_end(filter) }}
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Site</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for user in users %}
+            <tr>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.site.nom }}</td>
+                <td>{% if user.actif %}actif{% else %}inactif{% endif %}</td>
+                <td>
+                    <a href="{{ path("user_detail", {"id" : user.id}) }}">Profil</a>
+                    {% if user.actif %}
+                        <a href="{{ path("user_delete", {"id" : user.id}) }}">Supprimer</a>
+                    {% else %}
+                        <a href="{{ path("user_activate", {"id" : user.id}) }}">Réactiver</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path("app_register") }}">Ajouter</a>
+
+{% endblock %}
