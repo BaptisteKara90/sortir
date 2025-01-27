@@ -5,10 +5,12 @@ namespace App\Form;
 use App\Entity\Site;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class UserFilterType extends AbstractType
 {
@@ -33,7 +35,14 @@ class UserFilterType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Selectionner une site',
             ])
-        ;
+            ->add('actif', ChoiceType::class, [
+                'required' => false,
+                'choices' => [
+                    'Actif' => "actif",
+                    'Inactif' => 'inactif',
+                ],
+                'placeholder' => 'Selectionner un statut',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

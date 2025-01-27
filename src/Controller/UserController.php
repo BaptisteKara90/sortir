@@ -81,7 +81,6 @@ final class UserController extends AbstractController
 
         if ($userFilterForm->isSubmitted() && $userFilterForm->isValid()) {
             $filterValues = (object) $userFilterForm->getData();
-//            dd($filterValues);
             $users = $userRepository->findByFilter($filterValues);
 
             if (!$filterValues) {

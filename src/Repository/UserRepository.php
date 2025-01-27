@@ -83,6 +83,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($filter->site) {
             $q->andWhere('u.site = :site')->setParameter('site', $filter->site);
         }
+        if ($filter->actif) {
+            if($filter->actif === "actif"){
+                $q->andWhere('u.actif = :actif')->setParameter('actif', true);
+            } else {
+                $q->andWhere('u.actif = :actif')->setParameter('actif', false);
+            }
+
+        }
         $query = $q->getQuery();
         return $query->getResult();
     }
