@@ -16,6 +16,7 @@
                     <li><a href="{{ path('ville_list') }}">Villes</a></li>
                     <li><a href="{{ path('site_list') }}">Sites</a></li>
                     <li><a href="{{ path('user_list') }}">Participants</a></li>
+                    <li><a href="{{ path('lieu_list') }}">Lieux</a></li>
                 {% endif %}
                 <li><a href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
                 <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Mon Profil</a></li>
@@ -23,5 +24,4 @@
             {%  endif %}
         </ul>
     </div>
-
 </nav>

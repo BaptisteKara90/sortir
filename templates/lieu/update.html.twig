@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un Lieu{% endblock %}
+
+{% block body %}
+<h1>Modifier un Lieu</h1>
+
+<div>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>Modifier</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

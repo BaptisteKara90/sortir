@@ -90,11 +90,14 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         $user = $this->getUser();
         $etat = $etatRepository->findOneByLibelle('Annulée');
         $raison = $request->get("raison");
+        $actif = $request->get("actif");
+        $actif= $actif =="true" ? true : false;
+
         $etatId = $etat->getId();
         if($user->getId() !== $sortie->getOrganisateur()->getId()){
             return $this->redirectToRoute('accueil');
         }
-        $cancel = $sortieRepository->cancel($id, $etatId, $raison);
+        $cancel = $sortieRepository->cancel($id, $etatId, $raison, $actif);
         if(!$cancel){
             return $this->redirectToRoute('sortie_detail', ['id' => $id]);
         }
@@ -185,6 +188,22 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         $entityManager->flush();
         $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
         return $this->redirectToRoute('sortie_list', ['idSite' => $sortie->getSite()->getId()]);
+    }
+    #[Route('/update/{id}', name: 'update', methods: ['GET', 'POST'])]
+    public function update(Sortie $sortie, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, Request $request)
+    {
+        $sortie=$sortieRepository->find($sortie->getId());
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
+        if($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+        return $this->render('sortie/update.html.twig', [
+            'sortieForm' => $sortieForm,
+            'sortie' => $sortie,
+        ]);
     }
 
 }

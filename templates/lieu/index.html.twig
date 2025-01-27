@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des lieux{% endblock %}
+
+{% block body %}
+<h1>Liste des lieux</h1>
+
+    <table>
+        <thead>
+        <tr>
+
+            <th>Lieux</th>
+            <th>Ville</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for lieu in lieux %}
+            <tr>
+                <td>{{ lieu.nom }}</td>
+                <td>{{ lieu.ville.nom }}</td>
+                <td>
+                    <a href="{{ path('lieu_update', {'id':lieu.id}) }}">Modifier</a>
+                    {% if lieu.actif %}
+                    <a href="{{ path('lieu_delete', {'id':lieu.id}) }}">Supprimer</a>
+                    {% else%}
+                    <a href="{{ path('lieu_activate', {'id':lieu.id}) }}">Réactiver</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="">Ajouter</a>
+{% endblock %}
