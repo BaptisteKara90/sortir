@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     #[Route('/profile/{id}', name: 'user_profile', methods: ['GET', 'POST'])]
-    public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, FileUploader $fileUploader): Response
     {
 
         $userForm = $this->createForm(UserType::class, $user);
@@ -23,6 +24,18 @@ final class UserController extends AbstractController
         $userForm->handleRequest($request);
 
         if($userForm->isSubmitted() && $userForm->isValid()) {
+
+            $profilePicture = $userForm->get('profilePicture')->getData();
+
+            if($profilePicture) {
+
+                if($user->getProfilePicture()) {
+                    $fileUploader->delete($user->getProfilePicture());
+                }
+
+                $fileName = $fileUploader->upload($profilePicture);
+                $user->setProfilePicture($fileName);
+            }
 
             /** @var string $plainPassword */
             $plainPassword = $userForm->get('plainPassword')->getData();

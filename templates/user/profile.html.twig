@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Profil de {{ user.prenom }}</h1>
 
+    <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil">
+    
     {{ form_start(userForm) }}
     {{ form_row(userForm.nom) }}
     {{ form_row(userForm.prenom) }}

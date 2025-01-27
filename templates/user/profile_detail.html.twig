@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Profil de {{ user.nom|capitalize }} {{ user.prenom|capitalize }}</h1>
 
+    <div><img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil"></div>
     <div>
         <ul>
             <li>Prénom : {{ user.prenom|capitalize }}</li>
