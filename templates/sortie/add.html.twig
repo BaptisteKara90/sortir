@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block javascripts %}
-
+    {% block importmap %}{{ importmap('addLieu') }}{% endblock %}
 {% endblock %}
 {% block title %}Hello SortieController!{% endblock %}
 
@@ -8,7 +8,22 @@
     <h1>Créer une nouvelle sortie</h1>
 
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
+    {{ form_row(sortieForm.nom) }}
+    {{ form_row(sortieForm.debut) }}
+    {{ form_row(sortieForm.duree) }}
+    {{ form_row(sortieForm.dateLimitInscription) }}
+    {{ form_row(sortieForm.nbMaxParticipant) }}
+    {{ form_row(sortieForm.infosSortie) }}
+    {{ form_row(sortieForm.etat) }}
+    {{ form_row(sortieForm.site) }}
+    {{ form_row(sortieForm.lieu) }}
+    <div class="plus-container">
+        <div class="plus">+</div>
+    </div>
+    <div id="newLieu">
+        {{ form_row(sortieForm.nouveauLieu) }}
+    </div>
+    {{ form_row(sortieForm.active) }}
     <button>Créer une sortie</button>
     {{ form_end(sortieForm) }}
 {% endblock %}
