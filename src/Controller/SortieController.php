@@ -69,8 +69,11 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $sortie->setOrganisateur($this->getUser());
-            if($form->get('nouveauLieu')){
+            if($form->get('nouveauLieu')->getData()){
                 $sortie->setLieu($form->get('nouveauLieu')->getData());
+            }else{
+
+                $sortie->setLieu($form->get('lieu')->getData());
             }
             $entityManager->persist($sortie);
             $entityManager->flush();

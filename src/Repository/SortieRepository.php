@@ -87,7 +87,6 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('user', $user)
                 ->setParameter('libelle', 'Créée');
         }
-
         $qb->andWhere('s.active = true');
         $query = $qb->getQuery();
         return $query->getResult();
