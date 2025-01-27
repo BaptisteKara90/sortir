@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserFilterType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Service\FileUploader;
@@ -18,6 +19,12 @@ final class UserController extends AbstractController
     #[Route('/profile/{id}', name: 'user_profile', methods: ['GET', 'POST'])]
     public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, FileUploader $fileUploader): Response
     {
+
+        if ($user->getId() !== $this->getUser()->getId() || in_array("ROLE_ADMIN", $this->getUser()->getRoles(), true)) {
+
+            $this->addFlash('error', "Vous n'êtes pas autorisé à accéder à cette page");
+            $this->redirectToRoute('accueil');
+        }
 
         $userForm = $this->createForm(UserType::class, $user);
 
@@ -64,5 +71,71 @@ final class UserController extends AbstractController
         return $this->render('user/profile_detail.html.twig', [
             'user' => $user,
         ]);
+    }
+
+    #[Route('/user/list', name: 'user_list', methods: ['GET', 'POST'])]
+    public function list(Request $request, UserRepository $userRepository): Response {
+
+        $userFilterForm = $this->createForm(UserFilterType::class);
+        $userFilterForm->handleRequest($request);
+
+        if ($userFilterForm->isSubmitted() && $userFilterForm->isValid()) {
+            $filterValues = (object) $userFilterForm->getData();
+//            dd($filterValues);
+            $users = $userRepository->findByFilter($filterValues);
+
+            if (!$filterValues) {
+                $users = $userRepository->findAll();
+            }
+
+            return $this->render('user/list.html.twig', [
+                'users' => $users,
+                'filter' => $userFilterForm,
+            ]);
+        } else {
+
+            $users = $userRepository->findAll();
+
+            return $this->render('user/list.html.twig', [
+                'users' => $users,
+                'filter' => $userFilterForm,
+            ]);
+        }
+    }
+
+    #[Route('/user/delete/{id}', name: 'user_delete', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function delete(User $user, EntityManagerInterface $entityManager): Response {
+
+        if(in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+
+            $user->setActif(false);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash("success", "Le participant a bien été désactivé");
+            return $this->redirectToRoute('user_list');
+        } else {
+
+            $this->addFlash("error", "Vous n'êtes pas autoridé à effetuer cette action");
+            return $this->redirectToRoute('acceuil');
+        }
+    }
+
+    #[Route('/user/activate/{id}', name: 'user_activate', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function activate(User $user, EntityManagerInterface $entityManager): Response {
+
+        if(in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+
+            $user->setActif(true);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash("success", "Le participant a bien été activé");
+            return $this->redirectToRoute('user_list');
+        } else {
+
+            $this->addFlash("error", "Vous n'êtes pas autoridé à effetuer cette action");
+            return $this->redirectToRoute('acceuil');
+        }
     }
 }

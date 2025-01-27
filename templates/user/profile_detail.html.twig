@@ -15,5 +15,12 @@
             <li>Site de rattachement : {{ user.site.nom }}</li>
         </ul>
     </div>
+    <div>
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path("user_profile", {'id' : user.id }) }}">
+            <button>Modifier</button>
+        </a>
+        {% endif %}
+    </div>
 
 {% endblock %}
