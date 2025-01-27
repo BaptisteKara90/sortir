@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -102,16 +103,27 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function cancel(int $id, int $idEtat, string $raison): bool{
+    public function findByLieu(Lieu $lieu){
+
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.lieu = :lieu')->setParameter('lieu', $lieu);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function cancel(int $id, int $idEtat, string $raison, bool $actif): bool{
         var_dump($id);
         $qb = $this->createQueryBuilder('s');
         $qb->update()
             ->set('s.etat', ':etat')
             ->set('s.raison', ':raison')
+            ->set('s.active', ':actif')
             ->where('s.id = :id')
             ->setParameter('etat', $idEtat)
             ->setParameter('id', $id)
-            ->setParameter('raison', $raison);
+            ->setParameter('raison', $raison)
+            ->setParameter('actif', $actif);
         $query = $qb->getQuery()->execute();
         if($query === 0){
             return false;
