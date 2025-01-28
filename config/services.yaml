@@ -21,7 +21,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\FileUploader:
+    App\Service\ImageUploader:
         arguments:
             $targetDirectory: '%profile_pictures_path%'
 
