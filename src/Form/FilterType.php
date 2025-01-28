@@ -26,21 +26,36 @@ class FilterType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Tous les sites',
                 'data' => $userSite,
+                'attr' => [
+                    'class' => 'form-filterSortie',
+                ]
             ])
             ->add('content', TextType::class, [
                 'required' => false,
+                'attr' => [
+                    'class' => 'form-filterSortie',
+                ]
             ])
             ->add('dateDebut', DateTimeType::class, [
                 'required' => false,
                 'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-filterSortie',
+                ]
             ])
             ->add('dateFin', DateTimeType::class, [
                 'required' => false,
                 'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-filterSortie',
+                ]
             ])
             ->add('organisateur', CheckboxType::class, [
                 'required' => false,
                 'label' => "Sorties dont je suis l'organisateur/trice",
+                'attr' => [
+                    'class' => 'form-filterSortie',
+                ]
             ])
             ->add('inscrit', choiceType::class, [
                 'required' => false,
@@ -49,11 +64,17 @@ class FilterType extends AbstractType
                     'Oui' => 'inscrit',
                     'Non' => 'non inscrit',
                     'Tout' => 'tout',
+                ],
+                'attr' => [
+                    'class' => 'form-inscrit',
                 ]
             ])
             ->add('sortiePassee', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Sorties Passées',
+                'attr' => [
+                    'class' => 'form-sortiePassee',
+                ]
             ])
         ;
     }
