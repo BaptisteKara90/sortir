@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\CsvImportType;
 use App\Form\RegistrationFormType;
-use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,18 +22,21 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
             $roles = $form->get('roles')->getData();
-            $user->setRoles($roles);
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            try {
+                $user->setRoles($roles);
+                $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                $entityManager->persist($user);
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
+            }
 
-            // do anything else you need here, like send an email
-
+            $this->addFlash("success", "L'ajout du participant a correctement été effectué");
             return $this->redirectToRoute('sortie_list');
         }
 

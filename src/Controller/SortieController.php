@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\FilterType;
@@ -20,91 +21,112 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SortieController extends AbstractController
 {
     #[Route('/{idSite?}', name: 'list', requirements: ['idSite' => '\d+'], methods: ['GET', 'POST'])]
-    public function index(SortieRepository $sortieRepository,SiteRepository $siteRepository, Request $request, EntityManagerInterface $entityManager,SortieDesactivator $sortieDesactivator, stateModifier $stateModifier,?int $idSite = null): Response{
+    public function index(SortieRepository $sortieRepository,SiteRepository $siteRepository, Request $request, EntityManagerInterface $entityManager,SortieDesactivator $sortieDesactivator, stateModifier $stateModifier, ?int $idSite = null): Response{
 
         $sortieDesactivator->desactivateOldSorties();
         $stateModifier->stateModifier();
-
         $user = $this->getUser();
         
         if($idSite != null){
             $site = $siteRepository->find($idSite);
-            $formFilter = $this->createForm(FilterType::class, null, [
-                'userSite' => $site,
-            ]);
+
         }else{
-            $userSite = $user->getSite();
-            $formFilter = $this->createForm(FilterType::class, null, [
-                'userSite' => $userSite,
-            ]);
+            $site = $user->getSite();
         }
+
+        $formFilter = $this->createForm(FilterType::class, null, [
+            'userSite' => $site,
+        ]);
 
         $formFilter->handleRequest($request);
 
-        if($formFilter->isSubmitted() && $formFilter->isValid()){
+        if($formFilter->isSubmitted() && $formFilter->isValid()) {
+
             $data = $formFilter->getData();
-            $sortieRepository->findByOption($data,$user);
-            return $this->render('sortie/index.html.twig', [
-                'sorties' => $sortieRepository->findByOption($data,$user),
-                'formFilter' => $formFilter,
-            ]);
-        }
-        if($idSite != null){
-            $site = $entityManager->find(Site::class, $idSite);
-            $sorties = $sortieRepository->findBySite($site);
-            return $this->render('sortie/index.html.twig', [
+            $sorties = $sortieRepository->findByOption($data,$user);
+
+            return $this->render('sortie/list.html.twig', [
                 'sorties' => $sorties,
                 'formFilter' => $formFilter,
             ]);
         }
-        $sorties = $sortieRepository->findBySite($this->getUser()->getSite(), $user);
-        return $this->render('sortie/index.html.twig', [
+
+        $sorties = $sortieRepository->findBySite($site);
+
+        return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
             'formFilter' => $formFilter,
         ]);
     }
+
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
-public function add(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function add(Request $request, EntityManagerInterface $entityManager): Response {
+
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $sortie->setOrganisateur($this->getUser());
-            if($form->get('nouveauLieu')->getData()){
-                $sortie->setLieu($form->get('nouveauLieu')->getData());
-            }else{
 
-                $sortie->setLieu($form->get('lieu')->getData());
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            try {
+                $sortie->setOrganisateur($this->getUser());
+                if($form->get('nouveauLieu')->getData()){
+                    $nouveauLieu = $form->get('nouveauLieu')->getData();
+                    $entityManager->persist($nouveauLieu);
+                    $sortie->setLieu($nouveauLieu);
+                }else{
+                    $sortie->setLieu($form->get('lieu')->getData());
+                }
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
             }
+
             $entityManager->persist($sortie);
-            $entityManager->flush();
+           try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            $this->addFlash("success", "La sortie {$sortie->getNom()} a été créé avec succès !");
             return $this->redirectToRoute('accueil');
         }
+
         return $this->render('sortie/add.html.twig', [
             'sortieForm' => $form,
         ]);
     }
-    #[Route('/cancel/{id}', name: 'cancel', methods: ['GET', 'POST'])]
-    public function cancel(Request $request,EtatRepository $etatRepository , SortieRepository $sortieRepository, EntityManagerInterface $entityManager, int $id): Response
-    {
-        $sortie = $sortieRepository->find($id);
-        $user = $this->getUser();
-        $etat = $etatRepository->findOneByLibelle('Annulée');
-        $raison = $request->get("raison");
-        $actif = $request->get("actif");
-        $actif= $actif =="true" ? true : false;
 
-        $etatId = $etat->getId();
+    #[Route('/cancel/{id}', name: 'cancel', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function cancel(Sortie $sortie, Request $request,EtatRepository $etatRepository , SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $raison = $request->get("raison");
+        $actif = $request->get("actif") === "true";
+
         if($user->getId() !== $sortie->getOrganisateur()->getId()){
+            $this->addFlash("error", "Vous n'êtes pas autorisé à annuler cette sortie !");
             return $this->redirectToRoute('accueil');
         }
-        $cancel = $sortieRepository->cancel($id, $etatId, $raison, $actif);
-        if(!$cancel){
-            return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+
+        $sortie->setEtat($etatRepository->findOneByLibelle('Annulée'));
+        try {
+            $sortie->setRaison($raison);
+            $sortie->setActive($actif);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
-        $sortie = $sortieRepository->find($id);
-        return $this->redirectToRoute('sortie_detail', ['id' => $id]);
+        $entityManager->persist($sortie);
+        try {
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        $this->addFlash("success", "La sortie {$sortie->getNom()} a bien été annulée !");
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
     #[Route('/detail/{id}', name: 'detail', methods: ['GET'])]
@@ -115,19 +137,19 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         ]);
     }
 
-    #[Route('/{id}/join', name: 'join', methods: ['GET', 'POST'])]
+    #[Route('/{id}/join', name: 'join', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function join(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository){
 
-        $currentUser = $this->getUser();
+        $user = $this->getUser();
         $now = date("Y-m-d H:i:s");
         $errors = [];
 
-        if($currentUser->isActif() === false) {
+        if($user->isActif() === false) {
 
             $errors[] = "Vous ne pouvez pas vous inscrire à cette sortie car votre compte est désactivé";
         }
 
-        if($sortie->getParticipants()->contains($currentUser)){
+        if($sortie->getParticipants()->contains($user)){
 
             $errors[] = "Vous êtes déjà inscrit à cette sortie !";
         }
@@ -149,27 +171,33 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        $sortie->addParticipant($currentUser);
+        $sortie->addParticipant($user);
 
         if(count($sortie->getParticipants()) >= $sortie->getNbMaxParticipant()) {
             $sortie->setEtat($etatRepository->findOneByLibelle("cloturée"));
         }
+
         $entityManager->persist($sortie);
-        $entityManager->flush();
+        try {
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
 
         $this->addFlash("success", "Vous êtes bien inscrit à l'évènement {$sortie->getNom()} !");
         return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
-    #[Route('/{id}/quit', name: 'quit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/quit', name: 'quit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function quit(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository){
 
-        $currentUser = $this->getUser();
-        $now = date("Y-m-d H:i:s");
+        $user = $this->getUser();
+        $now = new \DateTime("now");
+
         $errors = [];
 
-        if(strtotime($now) > $sortie->getDebut()->getTimestamp()) {
-
+        if($now->getTimestamp() > $sortie->getDebut()->getTimestamp()) {
             $errors[] = "Vous ne pouvez plus vous désinscrire car l'évènement a déjà débuté";
         }
 
@@ -180,26 +208,38 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
             return $this->redirectToRoute('sortie_list');
         }
 
-        if(strtotime($now) < $sortie->getDateLimitInscription()->getTimestamp() && $sortie->getEtat()->getLibelle() === "cloturée") {
-
+        if($now->getTimestamp() < $sortie->getDateLimitInscription()->getTimestamp() && $sortie->getEtat()->getLibelle() === "cloturée") {
             $sortie->setEtat($etatRepository->findOneByLibelle("ouverte"));
         }
 
-        $sortie->removeParticipant($currentUser);
+        $sortie->removeParticipant($user);
         $entityManager->persist($sortie);
-        $entityManager->flush();
+
+        try {
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('sortie_list');
+        }
+
         $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
-        return $this->redirectToRoute('sortie_list', ['idSite' => $sortie->getSite()->getId()]);
+        return $this->redirectToRoute('sortie_list');
     }
-    #[Route('/update/{id}', name: 'update', methods: ['GET', 'POST'])]
-    public function update(Sortie $sortie, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, Request $request)
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function update(Sortie $sortie, EntityManagerInterface $entityManager, Request $request)
     {
-        $sortie=$sortieRepository->find($sortie->getId());
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+
         if($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $entityManager->persist($sortie);
-            $entityManager->flush();
+            try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            $this->addFlash('succcess', "La sortie {$sortie->getNom()} a correctement été modifiée !");
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
         return $this->render('sortie/update.html.twig', [
@@ -208,19 +248,25 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         ]);
     }
 
-    #[Route('/open/{id}', name: 'open', methods: ['GET'])]
-    public function open(EntityManagerInterface $entityManager, EtatRepository $etatRepository, SortieRepository $sortieRepository, Request $request, int $id){
-        $sortie=$sortieRepository->find($id);
+    #[Route('/open/{id}', name: 'open', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function open(Sortie $sortie, EntityManagerInterface $entityManager, EtatRepository $etatRepository, SortieRepository $sortieRepository){
 
         if($sortie->getEtat()->getLibelle() === "Créée") {
-            $etat=$etatRepository->findOneByLibelle("Ouverte");
-            $sortieRepository->updateEtat($id, $etat);
 
+            $etat= $etatRepository->findOneByLibelle("Ouverte");
+            $sortie->setEtat($etat);
+            $entityManager->persist($sortie);
+            try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            $this->addFlash('success', "La sortie {$sortie->getNom()} est maintenant ouverte aux inscriptions !");
             return $this->redirectToRoute('sortie_detail', [
-                'id' => $id
+                'id' => $sortie->getId()
             ]);
         }
         return $this->redirectToRoute('sortie_list');
     }
-
 }

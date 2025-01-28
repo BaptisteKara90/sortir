@@ -112,25 +112,6 @@ class SortieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function cancel(int $id, int $idEtat, string $raison, bool $actif): bool{
-        var_dump($id);
-        $qb = $this->createQueryBuilder('s');
-        $qb->update()
-            ->set('s.etat', ':etat')
-            ->set('s.raison', ':raison')
-            ->set('s.active', ':actif')
-            ->where('s.id = :id')
-            ->setParameter('etat', $idEtat)
-            ->setParameter('id', $id)
-            ->setParameter('raison', $raison)
-            ->setParameter('actif', $actif);
-        $query = $qb->getQuery()->execute();
-        if($query === 0){
-            return false;
-        }
-        return true;
-    }
-
     public function updateEtat(int $id, Etat $etat){
         $qb = $this->createQueryBuilder('s');
         $qb->update()

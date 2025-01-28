@@ -16,22 +16,6 @@ class LieuRepository extends ServiceEntityRepository
         parent::__construct($registry, Lieu::class);
     }
 
-
-    public function updateActif(int $id){
-        $qb = $this->createQueryBuilder('s');
-        $qb->update()
-            ->set('s.actif',':actif')
-            ->where('s.id = :id')
-            ->setParameter('id',$id)
-            ->setParameter('actif',0);
-        $query = $qb->getQuery()->execute();
-        if($query ===0){
-            return false;
-        }
-
-        return true;
-    }
-
     public function activate($id){
         $qb = $this->createQueryBuilder('s')
             ->update()

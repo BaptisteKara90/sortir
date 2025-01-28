@@ -20,7 +20,8 @@ class StateModifier
         $this->entityManager = $em;
     }
 
-    public function stateModifier(){
+    public function stateModifier() {
+
         $date = new \DateTime('now');
         $date->modify('+1 hour');
         $sortieRepository = $this->sortieRepository;
@@ -29,6 +30,7 @@ class StateModifier
         $etatEnCours = $etatRepository->findOneByLibelle("Activité en cours");
         $etatPassee= $etatRepository->findOneByLibelle("Passée");
         $sorties = $sortieRepository->findAll();
+
         foreach ($sorties as $sortie){
             $duree = new \DateInterval("PT{$sortie->getDuree()}M");
             $dateFin = (clone $sortie->getDebut())->add($duree);

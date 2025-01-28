@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
 #[Route('/site', name: 'site_')]
 final class SiteController extends AbstractController
 {
@@ -25,7 +26,7 @@ final class SiteController extends AbstractController
             $filterValue = $filter->get("nom")->getData();
             $sites = $siteRepository->findByNameFilter($filterValue);
 
-            if(!$filterValue){
+            if (!$filterValue) {
                 $sites = $siteRepository->findAll();
             }
 
@@ -41,66 +42,101 @@ final class SiteController extends AbstractController
             ]);
         }
     }
+
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function add(EntityManagerInterface $entityManager, Request $request): Response
     {
         $site = new Site();
         $form = $this->createForm(SiteType::class);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $site->setNom($form->get("nom")->getData());
-            $site->setActif(true);
 
-            $entityManager->persist($site);
+            try {
+                $site->setNom($form->get("nom")->getData());
+                $site->setActif(true);
+                $entityManager->persist($site);
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
+                return $this->redirectToRoute('site_list');
+            }
 
-            $entityManager->flush();
+            $this->addFlash("success", "L'ajout du site a correctement été effectué !");
             return $this->redirectToRoute('site_list');
         }
 
-        return $this->render('site/add.html.twig',[
-            'form' => $form,
-            ]);
-    }
-
-    #[Route('/update/{id}', name: 'update', methods: ['GET', 'POST'])]
-    public function update(EntityManagerInterface $entityManager, Request $request, int $id): Response
-    {
-        $site = $entityManager->getRepository(Site::class)->find($id);
-        $form = $this->createForm(SiteType::class, $site);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($form->getData());
-            $entityManager->flush();
-           return $this->redirectToRoute('site_list');
-        }
-        return $this->render('site/update.html.twig',[
+        return $this->render('site/add.html.twig', [
             'form' => $form,
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'delete', methods: ['GET', 'POST'])]
-    public function delete(SortieRepository $sortieRepository, SiteRepository $siteRepository, Request $request, int $id): Response
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function update(Site $site, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $site = $siteRepository->find($id);
-        $sortie = $sortieRepository->findBySite($site);
+        $form = $this->createForm(SiteType::class, $site);
+        $form->handleRequest($request);
 
-        if($sortie){
-            $siteRepository->updateActif($site->getId());
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            try {
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
+                return $this->redirectToRoute('site_list');
+            }
+
+            $this->addFlash("success", "Le site {$site->getNom()} a correctement été mis à jour !");
             return $this->redirectToRoute('site_list');
         }
-        $result= $siteRepository->delete($id);
-       if(!$result){
-           //TODO add flash !
-           return $this->redirectToRoute('site_list');
-       }
-       return $this->redirectToRoute('site_list');
 
+        return $this->render('site/update.html.twig', [
+            'form' => $form,
+        ]);
     }
 
-    #[Route('/activate/{id}', name: 'activate', methods: ['GET', 'POST'])]
-    public function activate(SiteRepository $siteRepository, int $id): Response
+    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function delete(Site $site, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
     {
-         $siteRepository->activate($id);
-         return $this->redirectToRoute('site_list');
+        $sorties = $sortieRepository->findBySite($site);
+
+        if ($sorties) {
+
+            $site->setActif(false);
+            $entityManager->persist($site);
+            try {
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
+            }
+            $this->addFlash("success", "Le site a été désactivé avec succès !");
+
+        } else {
+            $entityManager->remove($site);
+            try {
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', $exception->getMessage());
+            }
+            $this->addFlash("success", "Le site {$site->getNom()} a été supprimé avec succès !");
+        }
+
+        return $this->redirectToRoute('site_list');
+    }
+
+    #[Route('/activate/{id}', name: 'activate', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function activate(Site $site, EntityManagerInterface $entityManager): Response
+    {
+        $site->setActif(true);
+        $entityManager->persist($site);
+        try {
+            $entityManager->flush();
+        } catch (\Exception $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        $this->addFlash('success', "Le site {$site->getNom()} a été réactivé !");
+        return $this->redirectToRoute('site_list');
     }
 }
