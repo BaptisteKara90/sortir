@@ -130,4 +130,18 @@ class SortieRepository extends ServiceEntityRepository
         }
         return true;
     }
+
+    public function updateEtat(int $id, Etat $etat){
+        $qb = $this->createQueryBuilder('s');
+        $qb->update()
+            ->set('s.etat', ':etat')
+            ->setParameter('etat', $etat)
+            ->where('s.id = :id')
+            ->setParameter('id', $id);
+        $query = $qb->getQuery()->execute();
+        if($query === 0){
+            return false;
+        }
+        return true;
+    }
 }

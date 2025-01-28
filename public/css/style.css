@@ -104,3 +104,11 @@ body{
 #newLieu{
     display: none;
 }
+
+.show{
+    display: block;
+}
+
+.hidden{
+    display: none;
+}

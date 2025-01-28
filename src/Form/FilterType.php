@@ -24,7 +24,7 @@ class FilterType extends AbstractType
                 'required' => false,
                 'class' => Site::class,
                 'choice_label' => 'nom',
-                'placeholder' => 'Selectionner une site',
+                'placeholder' => 'Tous les sites',
                 'data' => $userSite,
             ])
             ->add('content', TextType::class, [

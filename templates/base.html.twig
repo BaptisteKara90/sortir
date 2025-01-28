@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>{% block title %}Sortir ENI{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    {% block stylesheets %}
+    {% endblock %}
+
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}

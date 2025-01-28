@@ -208,4 +208,19 @@ public function add(Request $request, EntityManagerInterface $entityManager): Re
         ]);
     }
 
+    #[Route('/open/{id}', name: 'open', methods: ['GET'])]
+    public function open(EntityManagerInterface $entityManager, EtatRepository $etatRepository, SortieRepository $sortieRepository, Request $request, int $id){
+        $sortie=$sortieRepository->find($id);
+
+        if($sortie->getEtat()->getLibelle() === "Créée") {
+            $etat=$etatRepository->findOneByLibelle("Ouverte");
+            $sortieRepository->updateEtat($id, $etat);
+
+            return $this->redirectToRoute('sortie_detail', [
+                'id' => $id
+            ]);
+        }
+        return $this->redirectToRoute('sortie_list');
+    }
+
 }

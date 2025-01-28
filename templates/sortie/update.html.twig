@@ -14,7 +14,16 @@
     {{ form_row(sortieForm.dateLimitInscription) }}
     {{ form_row(sortieForm.nbMaxParticipant) }}
     {{ form_row(sortieForm.infosSortie) }}
-    {{ form_row(sortieForm.etat) }}
+
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+        <div class="show">
+        {{ form_row(sortieForm.etat) }}
+        </div>
+        {% else %}
+            <div class="hidden">
+                {{ form_row(sortieForm.etat) }}
+            </div>
+            {% endif %}
     {{ form_row(sortieForm.site) }}
     {{ form_row(sortieForm.lieu) }}
     <div class="plus-container">
