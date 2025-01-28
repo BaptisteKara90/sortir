@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Form\UserFilterType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use App\Service\FileUploader;
+use App\Service\ImageUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     #[Route('/profile/{id}', name: 'user_profile', methods: ['GET', 'POST'])]
-    public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, FileUploader $fileUploader): Response
-    {
+    public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, ImageUploader $imageUploader): Response {
 
-        if ($user->getId() !== $this->getUser()->getId() || in_array("ROLE_ADMIN", $this->getUser()->getRoles(), true)) {
+        if ($user->getId() !== $this->getUser()->getId() || !in_array("ROLE_ADMIN", $this->getUser()->getRoles(), true)) {
 
             $this->addFlash('error', "Vous n'êtes pas autorisé à accéder à cette page");
             $this->redirectToRoute('accueil');
@@ -37,10 +36,10 @@ final class UserController extends AbstractController
             if($profilePicture) {
 
                 if($user->getProfilePicture()) {
-                    $fileUploader->delete($user->getProfilePicture());
+                    $imageUploader->delete($user->getProfilePicture());
                 }
 
-                $fileName = $fileUploader->upload($profilePicture);
+                $fileName = $imageUploader->upload($profilePicture);
                 $user->setProfilePicture($fileName);
             }
 

@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class FileUploader {
+class ImageUploader {
     public function __construct(private string $targetDirectory, private SluggerInterface $slugger) {
     }
 
