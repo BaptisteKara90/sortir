@@ -21,7 +21,7 @@
                 <td>{{ ville.nom }}</td>
                 <td>{{ ville.codePostal }}</td>
                 <td>
-                    <a href="">Modifier</a>
+                    <a href="{{ path('ville_update', {'id' : ville.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% endfor %}

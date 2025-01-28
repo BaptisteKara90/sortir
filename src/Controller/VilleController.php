@@ -19,8 +19,7 @@ final class VilleController extends AbstractController
     {
         $villes = $villeRepository->findAll();
 
-
-        return $this->render('ville/index.html.twig', [
+        return $this->render('ville/list.html.twig', [
             'villes' => $villes,
         ]);
     }
@@ -29,12 +28,19 @@ final class VilleController extends AbstractController
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $ville = new Ville();
-        $form = $this->createForm(VilleType::class);
+        $form = $this->createForm(VilleType::class, $ville);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()) {
-            $form = $form->getData();
-            $entityManager->persist($form);
-            $entityManager->flush();
+
+            $entityManager->persist($ville);
+            try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            $this->addFlash('success', "l'ajout de la ville {$ville->getNom()} a correctement été effectué !");
             return $this->redirectToRoute('ville_list');
         }
 
@@ -43,21 +49,27 @@ final class VilleController extends AbstractController
         ]);
     }
 
-    #[Route('/update/{id}', name: 'update')]
-    public function update(VilleRepository $villeRepository, Request $request, EntityManagerInterface $entityManager, int $id): Response
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
+    public function update(Ville $ville, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $ville = $villeRepository->find($id);
+
         $form = $this->createForm(VilleType::class, $ville);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($form->getData());
-            $entityManager->flush();
+
+            $entityManager->persist($ville);
+            try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            $this->addFlash("success", "La ville {$ville->getNom()} a correctement été modifiée !");
             return $this->redirectToRoute('ville_list');
         }
         return $this->render('ville/update.html.twig', [
             'form' => $form,
         ]);
     }
-
-
 }

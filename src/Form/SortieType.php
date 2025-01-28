@@ -63,8 +63,8 @@ class SortieType extends AbstractType
                 'required' => false,
             ])
             ->add('active', HiddenType::class, [
-            "data" => true
-        ])
+                "data" => true
+            ])
         ;
     }
 

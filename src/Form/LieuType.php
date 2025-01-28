@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,6 +23,10 @@ class LieuType extends AbstractType
                 'class' => Ville::class,
                 'placeholder' => 'Ville',
                 'choice_label' => 'nom',
+            ])
+            ->add('actif', HiddenType::class, [
+                "required" => true,
+                "data" => true,
             ])
         ;
     }
