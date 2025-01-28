@@ -1,27 +1,63 @@
-<nav class="container-menu">
-    <div class="menu-wrapper">
-        <a href="{{ path('sortie_list') }}">
-    <img class="logo" src="{{ asset('img/Média.jpg') }}" alt="le beau logo">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('sortie_list') }}">
+            <img class="logo me-2" src="{{ asset('img/Média.jpg') }}" alt="le beau logo" style="height: 40px;">
+            <span>Sortir.com</span>
         </a>
-            <ul class="menu">
-            {% if app.user %}
-                <li>{{ app.user.prenom }} {{ app.user.nom }}
+
+        <!-- Nom et Rôle -->
+        <div class="d-flex align-items-center ms-3">
+            <span class="text-white me-2">Bienvenue, {{ app.user.prenom }} {{ app.user.nom }}</span>
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <span class="text-white text-center">(Administrateur)</span>
+            {% endif %}
+        </div>
+
+        <!-- Bouton Burger Offcanvas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Offcanvas Menu -->
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ path('sortie_list') }}">Accueil</a>
+                    </li>
                     {% if 'ROLE_ADMIN' in app.user.roles %}
-                        (Administrateur)
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ path('app_register') }}">Ajout d'un utilisateur</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ path('ville_list') }}">Villes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ path('site_list') }}">Sites</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ path('user_list') }}">Participants</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ path('lieu_list') }}">Lieux</a>
+                        </li>
                     {% endif %}
-                </li>
-                <li><a href="{{ path('sortie_list') }}">Accueil</a></li>
-                {% if 'ROLE_ADMIN' in app.user.roles %}
-                    <li><a href="{{ path('app_register') }}">Ajout d'un utilisateur</a></li>
-                    <li><a href="{{ path('ville_list') }}">Villes</a></li>
-                    <li><a href="{{ path('site_list') }}">Sites</a></li>
-                    <li><a href="{{ path('user_list') }}">Participants</a></li>
-                    <li><a href="{{ path('lieu_list') }}">Lieux</a></li>
-                {% endif %}
-                <li><a href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
-                <li><a href="{{ path('user_profile', {"id": app.user.id}) }}">Mon Profil</a></li>
-                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
-            {%  endif %}
-        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ path('sortie_add') }}">Ajouter une sortie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ path('user_profile', {"id": app.user.id}) }}">Mon Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ path('app_logout') }}">Se déconnecter</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </nav>

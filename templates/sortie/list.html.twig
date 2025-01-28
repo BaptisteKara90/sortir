@@ -2,110 +2,167 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/sortie_list.css') }}">
 {% endblock %}
-{% block javascript %}
-{% block importmap %}{{ importmap('modal') }}{% endblock %}
-{% endblock %}
-{% block title %}Hello SortieController!{% endblock %}
 
-
-
+{% block title %}Toutes les Sorties{% endblock %}
 
 {% block body %}
-    <h1>Toutes les sorties</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Toutes les sorties</h1>
 
-<div>
-    {{ form_start(formFilter) }}
-    {{ form_widget(formFilter) }}
-    <button>Rechercher une sortie </button>
-    {{ form_end(formFilter) }}
-</div>
-<table>
-    <thead>
-        <tr>
-            <th>Nom de la sortie</th>
-            <th>Date de la sortie</th>
-            <th>Clôture</th>
-            <th>Inscrits/Places</th>
-            <th>Etat</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
+        <!-- Filtre des sorties -->
+        <div class="card p-3 mb-4">
+            <h5 class="card-title">Rechercher une sortie</h5>
+            {{ form_start(formFilter, {'attr': {'class': 'row g-3'}}) }}
+            <div class="col-md-4">
+                {{ form_row(formFilter.site, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(formFilter.content, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(formFilter.dateDebut, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(formFilter.dateFin, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(formFilter.inscrit, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col-md-4 d-flex align-items-end mb-2">
+                {{ form_row(formFilter.organisateur, {'attr': {'class': 'form-check-input'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(formFilter.sortiePassee, {'attr': {'class': 'form-check-input'}}) }}
+            </div>
 
-                {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.debut | date('d-m-Y') }}</td>
-                    <td>{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
-                    <td>{{ sortie.participants|length }}/{{ sortie.nbMaxParticipant }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
-                    <td>
-                        {% set userFound = false %}
-                        {% for participant in sortie.participants %}
-                            {% if participant.id == app.user.id %}
-                                {% set userFound = true %}
-                            {% endif %}
-                        {% endfor %}
+            <div class="col-12">
+                <button class="btn btn-primary">Rechercher</button>
+            </div>
+            {{ form_end(formFilter) }}
+        </div>
 
-                        {% if userFound %}
-                            oui
-                        {% else %}
-                            non
-                        {% endif %}
-                    </td>
-                    <td><a href="{{ path("user_detail", {"id" : sortie.organisateur.id}) }}">{{sortie.organisateur.nom}}</a></td>
-                    <td>
-                        {% if sortie.etat.libelle != "Annulée"%}
-                        {% if app.user in sortie.participants %}
-                            <a href="{{ path("sortie_quit", {"id": sortie.id}) }}">
-                                Se désinscrire
-                            </a>
-                        {% else %}
-                            <a href="{{ path("sortie_join", {"id": sortie.id}) }}">
-                                S'inscrire
-                            </a>
-                        {% endif %}
-                        {% endif %}
-                        <a href="{{ path('sortie_detail', {"id": sortie.id}) }}">Afficher</a>
-
-                        {% if sortie.organisateur.id == app.user.id and sortie.etat.libelle != "Annulée" or 'ROLE_ADMIN' in app.user.roles %}
-                        <a href="{{ path('sortie_update', {"id": sortie.id}) }}">Modifier</a>
-                        <a id="cancel" href="">Annuler</a>
-                        {% if sortie.etat.libelle == "Créée" %}
-                            <a href="{{ path('sortie_open', {"id": sortie.id}) }}">Publier</a>
-                        {% endif %}
-
-                        <!-- MODAL -->
-                        <div class="modal-overlay" id="modalOverlay">
-                            <div class="modal">
-                                <h2>Annulation de la Sortie</h2>
-                                <form action="{{ path('sortie_cancel', {'id': sortie.id }) }}" method="POST">
-                                    <div class="input-modal">
-                                        <label for="raison">Veuillez indiquer la raison de l'annulation</label>
-                                        <textarea name="raison" rows="3"></textarea>
-                                    </div>
-                                    <div>
-                                        <p >Censurer ?</p>
-                                        <input type="radio" name="actif" value="false">
-                                        <label for="actif">Oui</label>
-                                        <input type="radio" name="actif" value="true" checked>
-                                        <label for="actif">Non</label>
-                                    </div>
-
-                                    <div>
-                                        <input type="submit" value="Annuler la sortie"/>
-                                    </div>
-                                </form>
-                                <button id="closeModalButton">Précédent</button>
-                            </div>
+        <!-- Liste des sorties en cards -->
+        <div class="row g-4">
+            {% for sortie in sorties %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ sortie.nom }}</h5>
+                            <p class="card-text">
+                                <strong>Date :</strong> {{ sortie.debut | date('d-m-Y') }}<br>
+                                <strong>Clôture :</strong> {{ sortie.dateLimitInscription | date('d-m-Y') }}<br>
+                                <strong>Participants :</strong> {{ sortie.participants|length }}/{{ sortie.nbMaxParticipant }}<br>
+                                <strong>État :</strong> <span class="badge bg-info">{{ sortie.etat.libelle }}</span><br>
+                                <strong>Organisateur :</strong>
+                                <a href="{{ path('user_detail', {'id': sortie.organisateur.id}) }}">
+                                    {{ sortie.organisateur.nom }}
+                                </a><br>
+                                <strong>Inscrit :</strong>
+                                <span class="badge {{ app.user in sortie.participants ? 'bg-success' : 'bg-danger' }}">
+                        {{ app.user in sortie.participants ? 'Oui' : 'Non' }}
+                    </span>
+                            </p>
                         </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-    </tbody>
-</table>
+                        <div class="card-footer text-center">
+                            <!-- Bouton d'ouverture du menu déroulant -->
+                            <button
+                                    class="btn btn-primary btn-sm dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                            >
+                                Actions
+                            </button>
 
+                            <!-- Menu déroulant avec les boutons -->
+                            <ul class="dropdown-menu">
+                                {% if sortie.etat.libelle != "Annulée" %}
+                                    {% if app.user in sortie.participants %}
+                                        <li>
+                                            <a class="dropdown-item btn btn-sm btn-outline-danger" href="{{ path('sortie_quit', {'id': sortie.id}) }}">
+                                                Se désinscrire
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a class="dropdown-item btn btn-sm btn-outline-success" href="{{ path('sortie_join', {'id': sortie.id}) }}">
+                                                S'inscrire
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ path('sortie_detail', {'id': sortie.id}) }}">
+                                        Afficher
+                                    </a>
+                                </li>
+                                {% if sortie.organisateur.id == app.user.id and sortie.etat.libelle != "Annulée" or 'ROLE_ADMIN' in app.user.roles %}
+                                    <li>
+                                        <a class="dropdown-item btn btn-sm btn-outline-warning" href="{{ path('sortie_update', {'id': sortie.id}) }}">
+                                            Modifier
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <button
+                                                class="dropdown-item btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#cancelModal{{ sortie.id }}"
+                                        >
+                                            Annuler
+                                        </button>
+                                    </li>
+                                    {% if sortie.etat.libelle == "Créée" %}
+                                        <li>
+                                            <a class="dropdown-item btn btn-sm btn-outline-info" href="{{ path('sortie_open', {'id': sortie.id}) }}">
+                                                Publier
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL pour annuler la sortie -->
+                <div class="modal fade" id="cancelModal{{ sortie.id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ sortie.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancelModalLabel{{ sortie.id }}">Annulation de la Sortie</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ path('sortie_cancel', {'id': sortie.id }) }}" method="POST">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="raison{{ sortie.id }}" class="form-label">Veuillez indiquer la raison de l'annulation</label>
+                                        <textarea name="raison" id="raison{{ sortie.id }}" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p>Censurer ?</p>
+                                        <div class="form-check">
+                                            <input type="radio" name="actif" id="censureOui{{ sortie.id }}" value="false" class="form-check-input">
+                                            <label for="censureOui{{ sortie.id }}" class="form-check-label">Oui</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" name="actif" id="censureNon{{ sortie.id }}" value="true" class="form-check-input" checked>
+                                            <label for="censureNon{{ sortie.id }}" class="form-check-label">Non</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Précédent</button>
+                                    <button type="submit" class="btn btn-danger">Annuler la sortie</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
 {% endblock %}
+
+
+
