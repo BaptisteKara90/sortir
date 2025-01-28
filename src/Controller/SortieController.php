@@ -10,6 +10,7 @@ use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieDesactivator;
+use App\Service\StateModifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,10 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SortieController extends AbstractController
 {
     #[Route('/{idSite?}', name: 'list', requirements: ['idSite' => '\d+'], methods: ['GET', 'POST'])]
-    public function index(SortieRepository $sortieRepository,SiteRepository $siteRepository, Request $request, EntityManagerInterface $entityManager,SortieDesactivator $sortieDesactivator,?int $idSite = null): Response{
+    public function index(SortieRepository $sortieRepository,SiteRepository $siteRepository, Request $request, EntityManagerInterface $entityManager,SortieDesactivator $sortieDesactivator, stateModifier $stateModifier,?int $idSite = null): Response{
 
         $sortieDesactivator->desactivateOldSorties();
+        $stateModifier->stateModifier();
 
         $user = $this->getUser();
         
