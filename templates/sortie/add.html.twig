@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form_row(sortieForm.lieu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(sortieForm.lieu, {'attr': {'class': 'form-control', 'size' : '3'}}) }}
                 </div>
 
                 <!-- Bouton pour afficher le formulaire nouveauLieu -->
@@ -55,15 +55,26 @@
                 <!-- Formulaire pour nouveauLieu caché par défaut -->
                 <div id="newLieu" style="display: none;">
                     <div class="mb-3">
-                        <label for="nouveauLieu" class="form-label">Sélectionner un nouveau lieu</label>
+                        <label for="nouveauLieu" class="form-label">Ajouter un nouveau lieu</label>
                         {{ form_row(sortieForm.nouveauLieu.nom, {'attr': {'class': 'form-control'}}) }}
                         {{ form_row(sortieForm.nouveauLieu.rue, {'attr': {'class': 'form-control'}}) }}
                         {{ form_row(sortieForm.nouveauLieu.lattitude, {'attr': {'class': 'form-control'}}) }}
                         {{ form_row(sortieForm.nouveauLieu.longitude, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_row(sortieForm.nouveauLieu.ville, {'attr': {'class': 'form-select', 'style' : 'max-height: 150px; overflow-y : auto;'}}) }}
+                        {{ form_row(sortieForm.nouveauLieu.ville, {'attr': {'class': 'form-select', 'size' : '3'}}) }}
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-secondary" id="showNewLieuFormBtn">Ajouter une nouvelle ville</button>
+                        </div>
                     </div>
                 </div>
 
+                <div id="newVille" style="display: none;">
+                    <div class="mb-3">
+                        <label for="nouvelleVille" class="form-label">Ajouter une nouvelle ville</label>
+                        {{ form_row(sortieForm.nouvelleVille.nom,{'attr': {'class': 'form-control'}} ) }}
+                        {{ form_row(sortieForm.nouvelleVille.codePostal,{'attr': {'class': 'form-control'}} ) }}
+                    </div>
+                </div>
                 <div class="mb-3">
                     {{ form_row(sortieForm.active, {'attr': {'class': 'form-check-input'}}) }}
                 </div>
@@ -74,7 +85,6 @@
             </div>
         </div>
     </div>
-
     {{ form_end(sortieForm) }}
 
     <!-- Script pour afficher le formulaire nouveauLieu au clic du bouton -->
