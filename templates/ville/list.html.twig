@@ -1,31 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste villes{% endblock %}
+{% block title %}Liste des villes{% endblock %}
 
 {% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Liste des villes</h1>
 
-    <h1>Liste des villes</h1>
+        <div class="row g-4">
+            {% for ville in villes %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ ville.nom }}</h5>
+                            <p class="card-text">
+                                <strong>Code postal :</strong> {{ ville.codePostal }}
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="{{ path('ville_update', {'id': ville.id}) }}" class="btn btn-warning btn-sm">
+                                Modifier
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Ville</th>
-            <th>Code postal</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for ville in villes %}
-            <tr>
-                <td>{{ ville.nom }}</td>
-                <td>{{ ville.codePostal }}</td>
-                <td>
-                    <a href="{{ path('ville_update', {'id' : ville.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path('ville_add') }}">Ajouter</a>
+        <div class="text-center mt-4">
+            <a href="{{ path('ville_add') }}" class="btn btn-success">Ajouter une ville</a>
+        </div>
+    </div>
 {% endblock %}

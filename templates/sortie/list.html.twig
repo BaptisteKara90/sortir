@@ -13,26 +13,27 @@
         <div class="card p-3 mb-4">
             <h5 class="card-title">Rechercher une sortie</h5>
             {{ form_start(formFilter, {'attr': {'class': 'row g-3'}}) }}
+
             <div class="col-md-4">
-                {{ form_row(formFilter.site, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(formFilter.site, {'attr': {'class': 'form-control form-control-sm'}}) }}
             </div>
             <div class="col-md-4">
-                {{ form_row(formFilter.content, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(formFilter.content, {'attr': {'class': 'form-control form-control-sm'}}) }}
             </div>
             <div class="col-md-4">
-                {{ form_row(formFilter.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(formFilter.dateDebut, {'attr': {'class': 'form-control form-control-sm'}}) }}
             </div>
             <div class="col-md-4">
-                {{ form_row(formFilter.dateFin, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(formFilter.dateFin, {'attr': {'class': 'form-control form-control-sm'}}) }}
             </div>
             <div class="col-md-4">
-                {{ form_row(formFilter.inscrit, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(formFilter.inscrit, {'attr': {'class': 'form-control form-control-sm'}}) }}
             </div>
             <div class="col-md-4 d-flex align-items-end mb-2">
-                {{ form_row(formFilter.organisateur, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_row(formFilter.organisateur, {'attr': {'class': 'form-check-input ms-3'}}) }}
             </div>
             <div class="col-md-4">
-                {{ form_row(formFilter.sortiePassee, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_row(formFilter.sortiePassee, {'attr': {'class': 'form-check-input ms-3'}}) }}
             </div>
 
             <div class="col-12">
@@ -40,6 +41,7 @@
             </div>
             {{ form_end(formFilter) }}
         </div>
+
 
         <!-- Liste des sorties en cards -->
         <div class="row g-4">

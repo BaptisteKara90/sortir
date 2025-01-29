@@ -15,11 +15,13 @@
 </head>
 <body>
 <div class="containerMain">
+    {% if app.user %}
     <header class="nav-container">
         {% if app.user %}
         {% include 'menu/nav.html.twig' %}
         {% endif %}
     </header>
+    {% endif %}
     <main>
         {% for label, messages in app.flashes %}
             {% for message in messages %}

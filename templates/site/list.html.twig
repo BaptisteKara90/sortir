@@ -1,40 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}sites{% endblock %}
+{% block title %}Gérer les sites{% endblock %}
+
 
 {% block body %}
-    <h1>Gérer les sites</h1>
-    <div>
-        <h2>Filtrer les sites</h2>
-        {{ form_start(filterForm) }}
-        {{ form_widget(filterForm) }}
-        <button>Rechercher</button>
-        {{ form_end(filterForm) }}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Liste des sites</h1>
+
+        <div class="row g-4">
+            {% for site in sites %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ site.nom }}</h5>
+                        </div>
+                        <div class="dropdown d-flex justify-content-center mb-3">
+                            <button class="btn btn-primary dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('site_update', {'id': site.id}) }}">Modifier</a></li>
+                                {% if site.actif %}
+                                    <li><a class="dropdown-item text-danger" href="{{ path('site_delete', {'id': site.id}) }}">Supprimer</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item text-success" href="{{ path('site_activate', {'id': site.id}) }}">Réactiver</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('site_add') }}" class="btn btn-success">Ajouter un site</a>
+        </div>
     </div>
-    <table>
-        <thead>
-        <tr>
-            <th>Ville</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for site in sites %}
-            <tr>
-                <td>{{ site.nom }}</td>
-                <td>
-                    <a href="{{ path("site_update", {"id" : site.id}) }}">Modifier</a>
-                    {% if site.actif %}
-                    <a href="{{ path("site_delete", {"id" : site.id}) }}">Supprimer</a>
-                    {% else %}
-                       <a href="{{ path("site_activate", {"id" : site.id}) }}">Réactiver</a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path("site_add") }}">Ajouter</a>
-
 {% endblock %}

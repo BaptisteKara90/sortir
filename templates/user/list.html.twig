@@ -3,47 +3,75 @@
 {% block title %}participants{% endblock %}
 
 {% block body %}
-    <h1>Gérer les participants</h1>
-    <div>
-        <h2>Filtrer les participants</h2>
-        {{ form_start(filter) }}
-        {{ form_widget(filter) }}
-        <button>Rechercher</button>
+    <div class="container mt-4">
+    <h1 class="text-center mb-4">Gérer les participants</h1>
+
+    <!-- Filtre des participants -->
+    <div class="card p-3 mb-4">
+        <h5 class="card-title">Filtrer les participants</h5>
+        {{ form_start(filter, {'attr': {'class': 'row g-3'}}) }}
+        <div class="col-md-4">
+            {{ form_row(filter.nom, {'attr': {'class': 'form-control form-control-sm'}}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(filter.prenom, {'attr': {'class': 'form-control form-control-sm'}}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(filter.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(filter.site, {'attr': {'class': 'form-control form-control-sm'}}) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(filter.actif, {'attr': {'class': 'form-control form-control-sm'}}) }}
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary">Rechercher</button>
+        </div>
         {{ form_end(filter) }}
     </div>
-    <table>
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
-            <th>Site</th>
-            <th>Statut</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
 
+    <div class="row g-4">
         {% for user in users %}
-            <tr>
-                <td>{{ user.nom }}</td>
-                <td>{{ user.prenom }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.site.nom }}</td>
-                <td>{% if user.actif %}actif{% else %}inactif{% endif %}</td>
-                <td>
-                    <a href="{{ path("user_detail", {"id" : user.id}) }}">Profil</a>
-                    {% if user.actif %}
-                        <a href="{{ path("user_delete", {"id" : user.id}) }}">Supprimer</a>
-                    {% else %}
-                        <a href="{{ path("user_activate", {"id" : user.id}) }}">Réactiver</a>
-                    {% endif %}
-                </td>
-            </tr>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.prenom }} {{ user.nom }}</h5>
+                        <p class="card-text">
+                            <strong>Email : </strong> {{ user.email }}<br>
+                            <strong>Site : </strong>{{ user.site.nom }}<br>
+                            <strong>{% if user.actif %}actif{% else %}inactif{% endif %}</strong>
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <!-- Bouton d'ouverture du menu déroulant -->
+                        <button
+                                class="btn btn-primary btn-sm dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Actions
+                        </button>
+                        <!-- Menu déroulant avec les boutons -->
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ path("user_detail", {"id" : user.id}) }}">Profil</a>
+                            </li>
+                            {% if user.actif %}
+                                <li>
+                                    <a class="dropdown-item btn btn-sm btn-outline-danger" href="{{ path("user_delete", {"id" : user.id}) }}">Supprimer</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a class="dropdown-item btn btn-sm btn-outline-success" href="{{ path("user_activate", {"id" : user.id}) }}">Réactiver</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path("app_register") }}">Ajouter</a>
-    <a href="{{ path("app_csv_register") }}">Import CSV</a>
-
+    </div>
+    </div>
 {% endblock %}
