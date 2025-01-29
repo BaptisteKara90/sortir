@@ -4,74 +4,91 @@
 
 {% block body %}
     <div class="container mt-4">
-    <h1 class="text-center mb-4">Gérer les participants</h1>
+        <h1 class="text-center mb-4">Gérer les participants</h1>
 
-    <!-- Filtre des participants -->
-    <div class="card p-3 mb-4">
-        <h5 class="card-title">Filtrer les participants</h5>
-        {{ form_start(filter, {'attr': {'class': 'row g-3'}}) }}
-        <div class="col-md-4">
-            {{ form_row(filter.nom, {'attr': {'class': 'form-control form-control-sm'}}) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(filter.prenom, {'attr': {'class': 'form-control form-control-sm'}}) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(filter.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(filter.site, {'attr': {'class': 'form-control form-control-sm'}}) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(filter.actif, {'attr': {'class': 'form-control form-control-sm'}}) }}
-        </div>
-        <div class="col-12">
-            <button class="btn btn-primary">Rechercher</button>
-        </div>
-        {{ form_end(filter) }}
-    </div>
-
-    <div class="row g-4">
-        {% for user in users %}
+        <!-- Filtre des participants -->
+        <div class="card p-3 mb-4">
+            <h5 class="card-title">Filtrer les participants</h5>
+            {{ form_start(filter, {'attr': {'class': 'row g-3'}}) }}
             <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ user.prenom }} {{ user.nom }}</h5>
-                        <p class="card-text">
-                            <strong>Email : </strong> {{ user.email }}<br>
-                            <strong>Site : </strong>{{ user.site.nom }}<br>
-                            <strong>{% if user.actif %}actif{% else %}inactif{% endif %}</strong>
-                        </p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <!-- Bouton d'ouverture du menu déroulant -->
-                        <button
-                                class="btn btn-primary btn-sm dropdown-toggle"
-                                type="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                        >
-                            Actions
-                        </button>
-                        <!-- Menu déroulant avec les boutons -->
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ path("user_detail", {"id" : user.id}) }}">Profil</a>
-                            </li>
-                            {% if user.actif %}
+                {{ form_row(filter.nom, {'attr': {'class': 'form-control form-control-sm'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(filter.prenom, {'attr': {'class': 'form-control form-control-sm'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(filter.email, {'attr': {'class': 'form-control form-control-sm'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(filter.site, {'attr': {'class': 'form-control form-control-sm'}}) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(filter.actif, {'attr': {'class': 'form-control form-control-sm'}}) }}
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary">Rechercher</button>
+            </div>
+            {{ form_end(filter) }}
+        </div>
+
+        <div class="row g-4">
+            {% for user in users %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class=" d-flex align-items-center justify-content-around">
+                                <div>
+                                    {% if user.profilePicture %}
+                                        <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
+                                             alt="Photo de profil"
+                                             style="width: 100px ; border-radius: 50%; height: 100px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{{ asset('img/chevre.jpg') }}" alt="Photo de profil"
+                                             style="width: 100px ; border-radius: 50%; height: 100px; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h5 class="card-title">{{ user.prenom }} {{ user.nom }}</h5>
+                                    <p class="card-text">
+                                        <strong>Email : </strong> {{ user.email }}<br>
+                                        <strong>Site : </strong>{{ user.site.nom }}<br>
+                                        <strong>{% if user.actif %}actif{% else %}inactif{% endif %}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <!-- Bouton d'ouverture du menu déroulant -->
+                            <button
+                                    class="btn btn-primary btn-sm dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                            >
+                                Actions
+                            </button>
+                            <!-- Menu déroulant avec les boutons -->
+                            <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item btn btn-sm btn-outline-danger" href="{{ path("user_delete", {"id" : user.id}) }}">Supprimer</a>
+                                    <a class="dropdown-item btn btn-sm btn-outline-secondary"
+                                       href="{{ path("user_detail", {"id" : user.id}) }}">Profil</a>
                                 </li>
-                            {% else %}
-                                <li>
-                                    <a class="dropdown-item btn btn-sm btn-outline-success" href="{{ path("user_activate", {"id" : user.id}) }}">Réactiver</a>
-                                </li>
-                            {% endif %}
-                        </ul>
+                                {% if user.actif %}
+                                    <li>
+                                        <a class="dropdown-item btn btn-sm btn-outline-danger"
+                                           href="{{ path("user_delete", {"id" : user.id}) }}">Supprimer</a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="dropdown-item btn btn-sm btn-outline-success"
+                                           href="{{ path("user_activate", {"id" : user.id}) }}">Réactiver</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

@@ -3,34 +3,42 @@
 {% block title %}Liste des lieux{% endblock %}
 
 {% block body %}
-<h1>Liste des lieux</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Liste des lieux</h1>
 
-    <table>
-        <thead>
-        <tr>
+        <div class="text-center my-4 ">
+            <a href="{{ path('sortie_add') }}" class="btn btn-success">Ajouter une sortie</a>
+        </div>
+        <div class="row g-4">
+            {% for lieu in lieux %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
 
-            <th>Lieux</th>
-            <th>Ville</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
+                            <h5 class="card-title"> {{ lieu.nom }}</h5>
+                            <h6> Ville : {{ lieu.ville.nom }}</h6>
+                        </div>
 
-        {% for lieu in lieux %}
-            <tr>
-                <td>{{ lieu.nom }}</td>
-                <td>{{ lieu.ville.nom }}</td>
-                <td>
-                    <a href="{{ path('lieu_update', {'id':lieu.id}) }}">Modifier</a>
-                    {% if lieu.actif %}
-                    <a href="{{ path('lieu_delete', {'id':lieu.id}) }}">Supprimer</a>
-                    {% else%}
-                    <a href="{{ path('lieu_activate', {'id':lieu.id}) }}">Réactiver</a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="">Ajouter</a>
+                        <div class="dropdown d-flex justify-content-center mb-3">
+                            <button class="btn btn-primary dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('lieu_update', {'id':lieu.id}) }}">Modifier</a></li>
+                                {% if lieu.actif %}
+                                    <li><a class="dropdown-item text-danger" href="{{ path('lieu_delete', {'id':lieu.id}) }}">Supprimer</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item text-success" href="{{ path('lieu_activate', {'id':lieu.id}) }}">Réactiver</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+
+
 {% endblock %}

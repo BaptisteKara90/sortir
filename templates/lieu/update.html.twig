@@ -3,13 +3,33 @@
 {% block title %}Modifier un Lieu{% endblock %}
 
 {% block body %}
-<h1>Modifier un Lieu</h1>
+    <h1 class="text-center mb-4">Modifier un Lieu</h1>
 
-<div>
+    <div>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button>Modifier</button>
+        {{ form_start(form) }}
+        <div class="container mt-4">
+            <div class="card mx-auto" style="max-width: 600px;">
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.rue, {'attr': {'class': 'form-control'}}) }}
+                    </div>  <div class="mb-3">
+                        {{ form_row(form.lattitude, {'attr': {'class': 'form-control'}}) }}
+                    </div>  <div class="mb-3">
+                        {{ form_row(form.longitude, {'attr': {'class': 'form-control'}}) }}
+                    </div>  <div class="mb-3">
+                        {{ form_row(form.ville, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-warning">Modifier</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
     {{ form_end(form) }}
-</div>
 {% endblock %}
