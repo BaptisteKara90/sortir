@@ -16,7 +16,9 @@
 <body>
 <div class="containerMain">
     <header class="nav-container">
+        {% if app.user %}
         {% include 'menu/nav.html.twig' %}
+        {% endif %}
     </header>
     <main>
         {% for label, messages in app.flashes %}
