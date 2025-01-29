@@ -1,26 +1,91 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello SortieController!{% endblock %}
+
+{% block title %}Créer une nouvelle sortie{% endblock %}
 
 {% block body %}
-    <h1>Créer une nouvelle sortie</h1>
+    <h1 class="text-center mb-4">Créer une nouvelle sortie</h1>
 
     {{ form_start(sortieForm) }}
-    {{ form_row(sortieForm.nom) }}
-    {{ form_row(sortieForm.debut) }}
-    {{ form_row(sortieForm.duree) }}
-    {{ form_row(sortieForm.dateLimitInscription) }}
-    {{ form_row(sortieForm.nbMaxParticipant) }}
-    {{ form_row(sortieForm.infosSortie) }}
-    {{ form_row(sortieForm.etat) }}
-    {{ form_row(sortieForm.site) }}
-    {{ form_row(sortieForm.lieu) }}
-    <div class="plus-container">
-        <div class="plus">+</div>
+    <div class="container mt-4">
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Détails de la sortie</h5>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.debut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.duree, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.dateLimitInscription, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.nbMaxParticipant, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.infosSortie, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.etat, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.site, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.lieu, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <!-- Bouton pour afficher le formulaire nouveauLieu -->
+                <div class="mb-3">
+                    <button type="button" class="btn btn-secondary" id="showNewLieuFormBtn">Ajouter un nouveau lieu</button>
+                </div>
+
+                <!-- Formulaire pour nouveauLieu caché par défaut -->
+                <div id="newLieu" style="display: none;">
+                    <div class="mb-3">
+                        <label for="nouveauLieu" class="form-label">Sélectionner un nouveau lieu</label>
+                        {{ form_row(sortieForm.nouveauLieu.nom, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(sortieForm.nouveauLieu.rue, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(sortieForm.nouveauLieu.lattitude, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(sortieForm.nouveauLieu.longitude, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(sortieForm.nouveauLieu.ville, {'attr': {'class': 'form-select', 'style' : 'max-height: 150px; overflow-y : auto;'}}) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(sortieForm.active, {'attr': {'class': 'form-check-input'}}) }}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary w-100">Créer une sortie</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="newLieu">
-        {{ form_row(sortieForm.nouveauLieu) }}
-    </div>
-    {{ form_row(sortieForm.active) }}
-    <button>Créer une sortie</button>
+
     {{ form_end(sortieForm) }}
+
+    <!-- Script pour afficher le formulaire nouveauLieu au clic du bouton -->
+    <script>
+        document.getElementById('showNewLieuFormBtn').addEventListener('click', function() {
+            var newLieuForm = document.getElementById('newLieu');
+            if (newLieuForm.style.display === 'none' || newLieuForm.style.display === '') {
+                newLieuForm.style.display = 'block';
+            } else {
+                newLieuForm.style.display = 'none';
+            }
+        });
+    </script>
 {% endblock %}
