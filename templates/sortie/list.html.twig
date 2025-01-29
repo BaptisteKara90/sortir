@@ -54,7 +54,7 @@
                                 <strong>Date :</strong> {{ sortie.debut | date('d-m-Y') }}<br>
                                 <strong>Clôture :</strong> {{ sortie.dateLimitInscription | date('d-m-Y') }}<br>
                                 <strong>Participants :</strong> {{ sortie.participants|length }}/{{ sortie.nbMaxParticipant }}<br>
-                                <strong>État :</strong> <span class="badge {% if sortie.etat.libelle is same as "annulée" %}bg-danger{% else %}bg-info{% endif %}">{{ sortie.etat.libelle }}</span><br>
+                                <strong>État :</strong> <span class="badge {% if sortie.etat.libelle is same as "Annulée" %}bg-danger{% elseif sortie.etat.libelle is same as "Ouverte" %}bg-success{% else %}bg-info{% endif %}">{{ sortie.etat.libelle }}</span><br>
                                 <strong>Organisateur :</strong>
                                 <a href="{{ path('user_detail', {'id': sortie.organisateur.id}) }}">
                                     {{ sortie.organisateur.nom }}

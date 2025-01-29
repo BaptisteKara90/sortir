@@ -61,13 +61,13 @@
                         {{ form_row(sortieForm.nouveauLieu.lattitude, {'attr': {'class': 'form-control'}}) }}
                         {{ form_row(sortieForm.nouveauLieu.longitude, {'attr': {'class': 'form-control'}}) }}
                         {{ form_row(sortieForm.nouveauLieu.ville, {'attr': {'class': 'form-select', 'size' : '3'}}) }}
-
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-secondary" id="showNewLieuFormBtn">Ajouter une nouvelle ville</button>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary" id="showNewVilleFormBtn">Ajouter une nouvelle ville</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Formulaire pour nouvelleVille caché par défaut -->
                 <div id="newVille" style="display: none;">
                     <div class="mb-3">
                         <label for="nouvelleVille" class="form-label">Ajouter une nouvelle ville</label>
@@ -96,6 +96,10 @@
             } else {
                 newLieuForm.style.display = 'none';
             }
+        });
+        document.getElementById('showNewVilleFormBtn').addEventListener('click', function() {
+            var newVilleForm = document.getElementById('newVille');
+            newVilleForm.style.display = (newVilleForm.style.display === 'none' || newVilleForm.style.display === '') ? 'block' : 'none';
         });
     </script>
 {% endblock %}

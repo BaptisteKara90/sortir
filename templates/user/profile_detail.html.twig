@@ -3,24 +3,62 @@
 {% block title %}profil{% endblock %}
 
 {% block body %}
-    <h1>Profil de {{ user.nom|capitalize }} {{ user.prenom|capitalize }}</h1>
+    {#    <h1>Profil de {{ user.nom|capitalize }} {{ user.prenom|capitalize }}</h1> #}
 
-    <div><img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil"></div>
-    <div>
-        <ul>
-            <li>Prénom : {{ user.prenom|capitalize }}</li>
-            <li>Nom : {{ user.nom|capitalize }}</li>
-            <li>Numéro de téléphone : {{ user.telephone }}</li>
-            <li>Email : {{ user.email }}</li>
-            <li>Site de rattachement : {{ user.site.nom }}</li>
-        </ul>
-    </div>
-    <div>
-        {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path("user_profile", {'id' : user.id }) }}">
-            <button>Modifier</button>
-        </a>
-        {% endif %}
-    </div>
+    {#    <div><img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil"></div> #}
+    {#    <div> #}
+    {#        <ul> #}
+    {#            <li>Prénom : {{ user.prenom|capitalize }}</li> #}
+    {#            <li>Nom : {{ user.nom|capitalize }}</li> #}
+    {#            <li>Numéro de téléphone : {{ user.telephone }}</li> #}
+    {#            <li>Email : {{ user.email }}</li> #}
+    {#            <li>Site de rattachement : {{ user.site.nom }}</li> #}
+    {#        </ul> #}
+    {#    </div> #}
+    {#    <div> #}
+    {#        {% if is_granted('ROLE_ADMIN') %} #}
+    {#        <a href="{{ path("user_profile", {'id' : user.id }) }}"> #}
+    {#            <button>Modifier</button> #}
+    {#        </a> #}
+    {#        {% endif %} #}
+    {#    </div> #}
 
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Profil de {{ user.nom|capitalize }} {{ user.prenom|capitalize }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body p-0">
+                        <div class=" d-flex align-items-center justify-content-around">
+                        <div >
+                            {%if user.profilePicture %}
+                            <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
+                                  alt="Photo de profil" style="width: 100px ; border-radius: 50%; height: 100px; object-fit: cover;">
+                            {% else %}
+                            <img src="{{ asset('img/chevre.jpg') }}" alt="Photo de profil" style="width: 100px ; border-radius: 50%; height: 100px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <ul class="list-unstyled mt-3">
+                            <li><strong>Prénom :</strong> {{ user.prenom|capitalize }}</li>
+                            <li><strong>Nom :</strong> {{ user.nom|capitalize }}</li>
+                            <li><strong>Numéro de téléphone :</strong> {{ user.telephone }}</li>
+                            <li><strong>Email :</strong> {{ user.email }}</li>
+                            <li><strong>Site de rattachement :</strong> {{ user.site.nom }}</li>
+                        </ul>
+                        </div>
+                        <div>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div  class="card-footer text-center">
+                                <a href="{{ path("user_profile", {'id' : user.id }) }} " class="btn btn-warning btn-sm">
+                                    Modifier
+                                </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
