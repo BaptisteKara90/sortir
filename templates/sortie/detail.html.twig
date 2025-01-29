@@ -61,7 +61,7 @@
 
                 {% if sortie.organisateur.id == app.user.id and sortie.etat.libelle != 'Annulée' or 'ROLE_ADMIN' in app.user.roles %}
                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Annuler</button>
-                    <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
+                    <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-warning">Modifier</a>
                 {% endif %}
             </div>
         </div>

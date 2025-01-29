@@ -3,20 +3,53 @@
 {% block title %}profil{% endblock %}
 
 {% block body %}
-    <h1>Profil de {{ user.prenom }}</h1>
+    <h1 class="text-center my-4">Modification de {{ user.prenom }}</h1>
 
-    <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        {%if user.profilePicture %}
+            <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
+                 alt="Photo de profil" style="width: 150px ; border-radius: 50%; height: 150px; object-fit: cover;">
+        {% else %}
+            <img src="{{ asset('img/chevre.jpg') }}" alt="Photo de profil" style="width: 150px ; border-radius: 50%; height: 150px; object-fit: cover;">
+        {% endif %}
+
+        <div class="d-flex flex-column justify-content-center align-items-center my-3">
+            <label class="mb-1" for="profilePicture">Changer votre photo de profil</label>
+            {{ form_row(userForm.profilePicture, {'attr': {'class': 'form-control' }}) }}
+        </div>
+    </div>
     
     {{ form_start(userForm) }}
-    {{ form_row(userForm.nom) }}
-    {{ form_row(userForm.prenom) }}
-    {{ form_row(userForm.telephone) }}
-    {{ form_row(userForm.site) }}
-    {{ form_row(userForm.email) }}
-    {{ form_row(userForm.plainPassword, {
-        label: 'Password'
-    }) }}
-    <button type="submit" class="btn">Enregistrer</button>
+    <div class="container mt-1">
+        <div class="card mx-auto mb-4" style="max-width: 600px;">
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form_row(userForm.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(userForm.prenom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(userForm.telephone, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(userForm.site, {'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(userForm.email, {'attr': {'class': 'form-controle w-100'}}) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(userForm.plainPassword, {'attr': {'class': 'form-controle w-100'},label: 'Password' }) }}
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-warning">Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {{ form_end(userForm) }}
 
 {% endblock %}
