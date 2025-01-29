@@ -23,6 +23,9 @@
     </header>
     {% endif %}
     <main>
+        <a class="position-relative" style="top:10px; left:10px;" href="{{ app.request.headers.get('referer') }}">
+            <button class="btn btn-primary">Précédent</button>
+        </a>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="flash flash-{{ label }}">{{ message }}</div>
