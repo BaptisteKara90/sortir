@@ -72,6 +72,12 @@ final class SortieController extends AbstractController
                 $sortie->setOrganisateur($this->getUser());
                 if($form->get('nouveauLieu')->getData()){
                     $nouveauLieu = $form->get('nouveauLieu')->getData();
+                    if($form->get('nouvelleVille')->getData()) {
+                        $nouvelleVille = $form->get('nouvelleVille')->getData();
+                        $nouveauLieu->setVille($nouvelleVille);
+                    } else {
+                        $nouveauLieu->setVille($form->get('ville')->getData());
+                    }
                     $entityManager->persist($nouveauLieu);
                     $sortie->setLieu($nouveauLieu);
                 }else{
