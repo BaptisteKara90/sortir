@@ -36,7 +36,8 @@
                 <div class="col-md-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <div class=" d-flex align-items-center justify-content-between">
+                            <h5 class="card-title text-center">{{ user.prenom }} {{ user.nom }}</h5>
+                            <div class=" d-flex align-items-center justify-content-around">
                                 <div>
                                     {% if user.profilePicture %}
                                         <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
@@ -48,9 +49,8 @@
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <h5 class="card-title">{{ user.prenom }} {{ user.nom }}</h5>
-                                    <p class="card-text">
-                                        <strong>Email : </strong> {{ user.email }}<br>
+                                    <p class="card-text" style="max-width: 200px;">
+                                        <strong>Email : </strong> <span style="word-break: break-all">{{ user.email }}</span><br>
                                         <strong>Site : </strong>{{ user.site.nom }}<br>
                                         <strong>{% if user.actif %}actif{% else %}inactif{% endif %}</strong>
                                     </p>
