@@ -83,7 +83,7 @@ final class UserController extends AbstractController
             $users = $userRepository->findByFilter($filterValues);
 
             if (!$filterValues) {
-                $users = $userRepository->findAll();
+                $users = $userRepository->findBy([], ['nom' => 'ASC']);
             }
 
             return $this->render('user/list.html.twig', [
@@ -92,7 +92,7 @@ final class UserController extends AbstractController
             ]);
         } else {
 
-            $users = $userRepository->findAll();
+            $users = $userRepository->findBy([], ['nom' => 'ASC']);
 
             return $this->render('user/list.html.twig', [
                 'users' => $users,

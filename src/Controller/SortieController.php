@@ -42,8 +42,8 @@ final class SortieController extends AbstractController
         $formFilter->handleRequest($request);
 
         if($formFilter->isSubmitted() && $formFilter->isValid()) {
-
             $data = $formFilter->getData();
+
             $sorties = $sortieRepository->findByOption($data,$user);
 
             return $this->render('sortie/list.html.twig', [

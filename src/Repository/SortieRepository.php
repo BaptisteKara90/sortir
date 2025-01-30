@@ -68,12 +68,15 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere('s.organisateur = :organisateur')
                 ->setParameter('organisateur', $user->getId());
         }
-        if($data['inscrit']) {
+        if($data['inscrit'] == "vrai") {
             $qb->andWhere(':inscrit MEMBER OF s.participants')
+                ->setParameter('inscrit', $user);
+        } elseif ($data['inscrit'] == "faux"){
+            $qb->andWhere(':inscrit NOT MEMBER OF s.participants')
                 ->setParameter('inscrit', $user);
         }
         if ($data['sortiePassee']) {
-                $qb->andWhere('etat.libelle = :libelle')
+             $qb->andWhere('etat.libelle = :libelle')
                 ->setParameter('libelle', 'Passée');
         }
 
@@ -82,11 +85,11 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere(
                 $qb->expr()->orX(
                     's.organisateur = :user',
-                    'etat.libelle != :libelle'
+                    'etat.libelle != :libelle_cree'
                 )
             )
                 ->setParameter('user', $user)
-                ->setParameter('libelle', 'Créée');
+                ->setParameter('libelle_cree', 'Créée');
         }
         $qb->andWhere('s.active = true');
         $query = $qb->getQuery();

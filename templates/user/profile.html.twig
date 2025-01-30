@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1 class="text-center my-4">Modification de {{ user.prenom }}</h1>
-
+    {{ form_start(userForm) }}
     <div class="d-flex flex-column justify-content-center align-items-center">
         {%if user.profilePicture %}
             <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}"
@@ -18,8 +18,6 @@
             {{ form_row(userForm.profilePicture, {'attr': {'class': 'form-control' }}) }}
         </div>
     </div>
-    
-    {{ form_start(userForm) }}
     <div class="container mt-1">
         <div class="card mx-auto mb-4" style="max-width: 600px;">
             <div class="card-body">
