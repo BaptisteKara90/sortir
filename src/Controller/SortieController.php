@@ -46,6 +46,12 @@ final class SortieController extends AbstractController
 
             $sorties = $sortieRepository->findByOption($data,$user);
 
+            foreach($sorties as $key => $sortie){
+                if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
+                    unset($sorties[$key]);
+                }
+            }
+
             return $this->render('sortie/list.html.twig', [
                 'sorties' => $sorties,
                 'formFilter' => $formFilter,
@@ -53,6 +59,12 @@ final class SortieController extends AbstractController
         }
 
         $sorties = $sortieRepository->findBySite($site);
+
+        foreach($sorties as $key => $sortie){
+            if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
+                unset($sorties[$key]);
+            }
+        }
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,

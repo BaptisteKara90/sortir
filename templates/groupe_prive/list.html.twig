@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes groupes privés{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Mes groupes privés</h1>
+
+{#        <div class="d-flex justify-content-center">#}
+{#            <div class="card p-3 mb-4 shadow-sm" style="max-width: 400px; width: 100%;">#}
+{#                <div class="card-body">#}
+{#                    <h5 class="card-title text-center mb-3">Filtrer les villes</h5>#}
+{#                    {{ form_start(form) }}#}
+{#                    <div class="row g-3">#}
+{#                        <div class="col-12">#}
+{#                            {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}#}
+{#                        </div>#}
+{#                        <div class="col-12 text-center">#}
+{#                            <button class="btn btn-primary w-75">Rechercher</button>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    {{ form_end(form) }}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+        <div class="row g-4">
+            {% for groupe in groupes %}
+                <div class="col-md-4">
+                    <a href="{{ path("gp_detail", {"id": groupe.id}) }}">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ groupe.nom }}</h5>
+                            </div>
+                            <div class="card-footer text-center">
+    {#                            <a href="{{ path('ville_update', {'id': ville.id}) }}" class="btn btn-warning btn-sm">#}
+    {#                                Modifier#}
+    {#                            </a>#}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('gp_add') }}" class="btn btn-success">Créer un groupe</a>
+        </div>
+    </div>
+{% endblock %}

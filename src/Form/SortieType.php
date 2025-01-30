@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Etat;
+use App\Entity\GroupePrive;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
@@ -10,7 +11,9 @@ use App\Entity\Sortie;
 use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -21,8 +24,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SortieType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $this->security->getUser();
+        $userGroupes = $user->getGroupePrivesCrees();
+
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Nom de la sortie'
@@ -72,6 +84,13 @@ class SortieType extends AbstractType
             ->add('nouvelleVille', VilleType::class, [
                 'label' => false,
                 'mapped' => false,
+                'required' => false,
+            ])
+            ->add('groupePrive', EntityType::class, [
+                'class' => GroupePrive::class,
+                'choices' => $userGroupes,
+                'choice_label' => 'nom',
+                'placeholder' => 'Sélectionnez un groupe',
                 'required' => false,
             ])
             ->add('active', HiddenType::class, [

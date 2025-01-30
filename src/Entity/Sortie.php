@@ -62,6 +62,9 @@ class Sortie
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?GroupePrive $groupePrive = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -239,6 +242,18 @@ class Sortie
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getGroupePrive(): ?GroupePrive
+    {
+        return $this->groupePrive;
+    }
+
+    public function setGroupePrive(?GroupePrive $groupePrive): static
+    {
+        $this->groupePrive = $groupePrive;
 
         return $this;
     }
