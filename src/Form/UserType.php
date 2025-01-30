@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Site;
 use App\Entity\User;
+use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -39,6 +40,11 @@ class UserType extends AbstractType
                 'placeholder' => 'Sélectionnez un site', // Option par défaut
                 'label' => 'Site',
                 'required' => true,
+                'query_builder' => function (SiteRepository $siteRepository) {
+                    return $siteRepository->createQueryBuilder('s')
+                        ->where('s.actif = :actif')
+                        ->setParameter('actif', true);
+                }
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
