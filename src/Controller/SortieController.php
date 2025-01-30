@@ -10,6 +10,7 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use App\Service\SortieDesactivator;
 use App\Service\StateModifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,17 +68,14 @@ final class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             try {
                 $sortie->setOrganisateur($this->getUser());
-                if($form->get('nouveauLieu')->getData()){
+                if($form->get('nouveauLieu')->get('nom')->getData()){
                     $nouveauLieu = $form->get('nouveauLieu')->getData();
-                    if($form->get('nouvelleVille')->getData()) {
+                    if($form->get('nouvelleVille')->get('nom')->getData()) {
                         $nouvelleVille = $form->get('nouvelleVille')->getData();
                         $nouveauLieu->setVille($nouvelleVille);
-                    } else {
-                        $nouveauLieu->setVille($form->get('ville')->getData());
-                    }
+                       }
                     $entityManager->persist($nouveauLieu);
                     $sortie->setLieu($nouveauLieu);
                 }else{
@@ -86,7 +84,6 @@ final class SortieController extends AbstractController
             } catch (\Exception $exception) {
                 $this->addFlash('error', $exception->getMessage());
             }
-
             $entityManager->persist($sortie);
            try {
                 $entityManager->flush();
@@ -137,7 +134,6 @@ final class SortieController extends AbstractController
 
     #[Route('/detail/{id}', name: 'detail', methods: ['GET'])]
     public function detail(Sortie $sortie) {
-
         return $this->render('sortie/detail.html.twig', [
             'sortie' => $sortie,
         ]);
@@ -231,20 +227,39 @@ final class SortieController extends AbstractController
         $this->addFlash("success", "Vous êtes bien désinscrit de l'évènement {$sortie->getNom()} !");
         return $this->redirectToRoute('sortie_list');
     }
+
     #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function update(Sortie $sortie, EntityManagerInterface $entityManager, Request $request)
+    public function update(Sortie $sortie, EntityManagerInterface $entityManager, Request $request, VilleRepository $villeRepository)
     {
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $entityManager->persist($sortie);
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             try {
-                $entityManager->flush();
+
+                if ($sortieForm->get('nouveauLieu')->get('nom')->getData()) {
+                    $nouveauLieu = $sortieForm->get('nouveauLieu')->getData();
+
+                    if ($sortieForm->get('nouvelleVille')->getData()) {
+                        $nouvelleVille = $sortieForm->get('nouvelleVille')->getData();
+                        $nouveauLieu->setVille($nouvelleVille);
+
+                    }
+
+                    $entityManager->persist($nouveauLieu);
+                    $sortie->setLieu($nouveauLieu);
+
+                }
+
             } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
             }
-
+            $entityManager->persist($sortie);
+            try{
+                $entityManager->flush();
+            }catch (\Exception $e){
+                $this->addFlash('error', $e->getMessage());
+            }
             $this->addFlash('succcess', "La sortie {$sortie->getNom()} a correctement été modifiée !");
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
