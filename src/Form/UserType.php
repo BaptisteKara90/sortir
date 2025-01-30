@@ -66,6 +66,7 @@ class UserType extends AbstractType
                 'mapped' => false,
                 'constraints' => [new Image(["maxSize" => '5M', 'maxSizeMessage' => 'Le fichier est trop volumineux',])],
                 'label' => false,
+                'required' => false,
             ])
         ;
     }

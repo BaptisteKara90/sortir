@@ -64,9 +64,8 @@ class FilterType extends AbstractType
                 'required' => false,
                 'label' => 'Inscrit',
                 'choices' => [
-                    'Oui' => 'inscrit',
-                    'Non' => 'non inscrit',
-                    'Tout' => 'tout',
+                    'Oui' => "vrai",
+                    'Non' => "faux",
                 ],
                 'attr' => [
                     'class' => 'form-inscrit',
