@@ -60,12 +60,12 @@ class SortieType extends AbstractType
             ])
             ->add('nouveauLieu', LieuType::class, [
                 'label' => false,
-                'mapped' => false, // Ce champ ne correspond pas directement à une propriété de l'entité
+                'mapped' => false,
                 'required' => false,
             ])
             ->add('nouvelleVille', VilleType::class, [
                 'label' => false,
-                'mapped' => false, // Ce champ ne correspond pas directement à une propriété de l'entité
+                'mapped' => false,
                 'required' => false,
             ])
             ->add('active', HiddenType::class, [

@@ -12,3 +12,7 @@ html, body {
 main {
     flex: 1;
 }
+
+.dropdown-menu{
+    z-index: 99999;
+}
