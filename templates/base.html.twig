@@ -26,13 +26,15 @@
         <a class="position-relative" style="top:10px; left:10px;" href="{{ app.request.headers.get('referer') }}">
             <button class="btn btn-outline-primary">Précédent</button>
         </a>
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert {% if label == 'success' %}alert-success{% elseif label == 'error' %}alert-danger{% endif %} mt-3">
-                    {{ message }}
-                </div>
+        <div class="d-flex justify-content-center">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="w-50 alert {% if label == 'success' %}alert-success{% elseif label == 'error' %}alert-danger{% endif %} mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
+        </div>
 
         {% block body %}{% endblock %}
     </main>

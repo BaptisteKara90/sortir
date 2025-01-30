@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ groupe.nom }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Détail du groupe : {{ groupe.nom }} </h1>
+
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Ajouter un membre</h5>
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5>Liste des membres :</h5>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Statut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ groupe.proprietaire.id }}</td>
+                    <td>{{ groupe.proprietaire.nom }}</td>
+                    <td>{{ groupe.proprietaire.prenom }}</td>
+                    <td>Propriétaire</td>
+                </tr>
+                {% for membre in groupe.membres %}
+                    <tr>
+                        <td>{{ membre.id }}</td>
+                        <td>{{ membre.nom }}</td>
+                        <td>{{ membre.prenom }}</td>
+                        <td>Membre</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
