@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Lieu;
+use App\Form\LieuFilterType;
 use App\Form\LieuType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -18,12 +19,27 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LieuController extends AbstractController
 {
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function list(LieuRepository $repository): Response
+    public function list(Request $request, LieuRepository $repository): Response
     {
-        $lieux = $repository->findAll();
+
+        $form = $this->createForm(LieuFilterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $filterValue = $form->get("nom")->getData();
+            $lieux = $repository->findByNameFilter($filterValue);
+
+            if(!$filterValue) {
+                $lieux = $repository->findAll();
+            }
+        } else {
+            $lieux = $repository->findAll();
+        }
 
         return $this->render('lieu/list.html.twig', [
             'lieux' => $lieux,
+            'form' => $form,
         ]);
     }
 

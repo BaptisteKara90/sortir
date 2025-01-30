@@ -19,10 +19,10 @@ final class UserController extends AbstractController
     #[Route('/profile/{id}', name: 'user_profile', methods: ['GET', 'POST'])]
     public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, ImageUploader $imageUploader): Response {
 
-        if ($user->getId() !== $this->getUser()->getId() || !in_array("ROLE_ADMIN", $this->getUser()->getRoles(), true)) {
+        if ($user->getId() !== $this->getUser()->getId() && !in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
 
             $this->addFlash('error', "Vous n'êtes pas autorisé à accéder à cette page");
-            $this->redirectToRoute('accueil');
+            return $this->redirectToRoute('accueil');
         }
 
         $userForm = $this->createForm(UserType::class, $user);

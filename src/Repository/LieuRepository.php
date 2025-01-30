@@ -25,4 +25,16 @@ class LieuRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         return $query->getResult();
     }
+
+    /**
+     * @return Lieu[] Returns an array of Site objects
+     */
+    public function findByNameFilter($value): array
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->where('l.nom LIKE :val')
+            ->setParameter('val', '%' . $value .'%');
+        $query =$qb->getQuery();
+        return $query->getResult();
+    }
 }
