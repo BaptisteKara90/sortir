@@ -7,6 +7,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -57,6 +58,11 @@ class SortieType extends AbstractType
                 'choice_label' => 'nom', // Nom du lieu à afficher
                 'placeholder' => 'Sélectionnez un lieu existant',
                 'required' => false,
+                'query_builder' => function (LieuRepository $lieuRepository) {
+                return $lieuRepository->createQueryBuilder('l')
+                    ->where('l.actif = :actif')
+                    ->setParameter('actif', true);
+                }
             ])
             ->add('nouveauLieu', LieuType::class, [
                 'label' => false,
