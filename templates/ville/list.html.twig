@@ -6,6 +6,24 @@
     <div class="container mt-4">
         <h1 class="text-center mb-4">Liste des villes</h1>
 
+        <div class="d-flex justify-content-center">
+            <div class="card p-3 mb-4 shadow-sm" style="max-width: 400px; width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Filtrer les villes</h5>
+                    {{ form_start(form) }}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary w-75">Rechercher</button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
         <div class="row g-4">
             {% for ville in villes %}
                 <div class="col-md-4">

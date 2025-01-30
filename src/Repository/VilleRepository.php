@@ -16,6 +16,10 @@ class VilleRepository extends ServiceEntityRepository
         parent::__construct($registry, Ville::class);
     }
 
+    /**
+     * @param int $lieuId
+     * @return mixed
+     */
     public function findVillesByLieu(int $lieuId){
         $qb= $this->createQueryBuilder('v');
 
@@ -27,6 +31,16 @@ class VilleRepository extends ServiceEntityRepository
 
     }
 
-
-
+    /**
+     * @param $value
+     * @return Ville[]
+     */
+    public function findByNameFilter($value): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.nom LIKE :val')
+            ->setParameter('val', '%' . $value .'%');
+        $query =$qb->getQuery();
+        return $query->getResult();
+    }
 }

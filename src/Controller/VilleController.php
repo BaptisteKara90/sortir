@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ville;
+use App\Form\VilleFilterType;
 use App\Form\VilleType;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,12 +16,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class VilleController extends AbstractController
 {
     #[Route('/list', name: 'list')]
-    public function index(VilleRepository $villeRepository): Response
+    public function index(Request $request, VilleRepository $villeRepository): Response
     {
-        $villes = $villeRepository->findAll();
+        $form = $this->createForm(VilleFilterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterValue = $form->get("nom")->getData();
+            $villes = $villeRepository->findByNameFilter($filterValue);
+
+            if(!$filterValue){
+                $villes = $villeRepository->findAll();
+            }
+        } else {
+            $villes = $villeRepository->findAll();
+        }
 
         return $this->render('ville/list.html.twig', [
             'villes' => $villes,
+            'form' => $form,
         ]);
     }
 
