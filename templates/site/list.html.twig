@@ -7,6 +7,27 @@
     <div class="container mt-4">
         <h1 class="text-center mb-4">Liste des sites</h1>
 
+        <!-- Filtre des sites -->
+        <!-- Filtre des sites -->
+        <div class="d-flex justify-content-center">
+            <div class="card p-3 mb-4 shadow-sm" style="max-width: 400px; width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Filtrer les sites</h5>
+                    {{ form_start(filterForm) }}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            {{ form_row(filterForm.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary w-75">Rechercher</button>
+                        </div>
+                    </div>
+                    {{ form_end(filterForm) }}
+                </div>
+            </div>
+        </div>
+
+
         <div class="row g-4">
             {% for site in sites %}
                 <div class="col-md-4">
@@ -15,15 +36,19 @@
                             <h5 class="card-title">{{ site.nom }}</h5>
                         </div>
                         <div class="dropdown d-flex justify-content-center mb-3">
-                            <button class="btn btn-outline-secondary dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-outline-secondary dropdown-toggle " type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                 Actions
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ path('site_update', {'id': site.id}) }}">Modifier</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ path('site_update', {'id': site.id}) }}">Modifier</a></li>
                                 {% if site.actif %}
-                                    <li><a class="dropdown-item text-danger" href="{{ path('site_delete', {'id': site.id}) }}">Supprimer</a></li>
+                                    <li><a class="dropdown-item text-danger"
+                                           href="{{ path('site_delete', {'id': site.id}) }}">Supprimer</a></li>
                                 {% else %}
-                                    <li><a class="dropdown-item text-success" href="{{ path('site_activate', {'id': site.id}) }}">Réactiver</a></li>
+                                    <li><a class="dropdown-item text-success"
+                                           href="{{ path('site_activate', {'id': site.id}) }}">Réactiver</a></li>
                                 {% endif %}
                             </ul>
                         </div>

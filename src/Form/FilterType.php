@@ -32,12 +32,14 @@ class FilterType extends AbstractType
             ])
             ->add('content', TextType::class, [
                 'required' => false,
+                'label' => 'Nom de la sortie',
                 'attr' => [
                     'class' => 'form-filterSortie',
                 ]
             ])
             ->add('dateDebut', DateTimeType::class, [
                 'required' => false,
+                'label'=> 'Date de début',
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'form-filterSortie',
@@ -45,6 +47,7 @@ class FilterType extends AbstractType
             ])
             ->add('dateFin', DateTimeType::class, [
                 'required' => false,
+                'label'=> 'Date de fin',
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'form-filterSortie',

@@ -28,7 +28,7 @@
         </a>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert {% if label == 'success' %}alert-success{% elseif label == 'error' %}alert-danger{% endif %}">
+                <div class="alert {% if label == 'success' %}alert-success{% elseif label == 'error' %}alert-danger{% endif %} mt-3">
                     {{ message }}
                 </div>
             {% endfor %}
