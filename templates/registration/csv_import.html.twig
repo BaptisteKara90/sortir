@@ -3,10 +3,29 @@
 {% block title %}CSV import{% endblock %}
 
 {% block body %}
-    <h1>Import CSV</h1>
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card p-4 shadow-sm" style="max-width: 400px; width: 100%;">
+            <h1 class="h4 text-center mb-1">Importer des utilisateurs via un CSV</h1>
+            <div class="card-body">
+                {{ form_start(form) }}
 
-    {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(form.file, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary w-100">Importer</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     {{ form_widget(form) }}
-    <button type="submit" class="btn">Importer</button>
+
     {{ form_end(form) }}
 {% endblock %}
