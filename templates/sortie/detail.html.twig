@@ -58,7 +58,7 @@
                         <a href="{{ path('sortie_join', {'id': sortie.id}) }}" class="btn btn-success">S'inscrire</a>
                     {% endif %}
                 {% endif %}
-                {% if sortie.etat.libelle != 'Annulée' or  sortie.etat.libelle != 'Passée' %}
+                {% if sortie.etat.libelle != 'Annulée' and  sortie.etat.libelle != 'Passée' %}
                     {% if sortie.organisateur.id == app.user.id or 'ROLE_ADMIN' in app.user.roles %}
                         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">Annuler
                         </button>

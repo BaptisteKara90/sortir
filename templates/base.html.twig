@@ -23,9 +23,12 @@
     </header>
     {% endif %}
     <main>
-        <a class="position-relative" style="top:10px; left:10px;" href="{{ app.request.headers.get('referer') }}">
-            <button class="btn btn-outline-primary">Précédent</button>
-        </a>
+        {% if app.request.attributes.get('_route') != 'app_login' %}
+            <a class="position-relative" style="top:10px; left:10px;" href="{{ app.request.headers.get('referer') }}">
+                <button class="btn btn-outline-primary">Précédent</button>
+            </a>
+        {% endif %}
+
         <div class="d-flex justify-content-center">
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
