@@ -39,12 +39,14 @@
                     <td>Propriétaire</td>
                 </tr>
                 {% for membre in groupe.membres %}
+                    {% if membre != groupe.proprietaire %}
                     <tr>
                         <td>{{ membre.id }}</td>
                         <td>{{ membre.nom }}</td>
                         <td>{{ membre.prenom }}</td>
                         <td>Membre</td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

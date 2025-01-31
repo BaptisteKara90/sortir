@@ -47,8 +47,10 @@ final class SortieController extends AbstractController
             $sorties = $sortieRepository->findByOption($data,$user);
 
             foreach($sorties as $key => $sortie){
-                if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
-                    unset($sorties[$key]);
+                if(!in_array('ROLE_ADMIN',$user->getRoles())) {
+                    if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
+                        unset($sorties[$key]);
+                    }
                 }
             }
 
@@ -61,8 +63,10 @@ final class SortieController extends AbstractController
         $sorties = $sortieRepository->findBySite($site);
 
         foreach($sorties as $key => $sortie){
-            if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
-                unset($sorties[$key]);
+            if(!in_array('ROLE_ADMIN',$user->getRoles())) {
+                 if(!empty($sortie->getGroupePrive()) && !$sortie->getGroupePrive()->getMembres()->contains($user)) {
+                     unset($sorties[$key]);
+                 }
             }
         }
 
