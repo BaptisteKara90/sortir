@@ -50,7 +50,7 @@ Sortir est une application web développée dans le cadre d'un projet d'étude. 
 ## Auteurs
 - Antoine Guillo
 - Baptiste Kara
-- Elisabeth Lombard
+- Elizabeth Lombard
 
 ## Licence
 Ce projet est réalisé dans un cadre pédagogique et n'est pas destiné à un usage commercial.
